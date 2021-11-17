@@ -6,4 +6,6 @@ Linguagem HTML / CSS /JS
 
 Exercício de JS
 
-Url do resultado final (em construção): 
+Trabalho em dupla com:  Kayque Coelho https://github.com/tieskay
+
+Url do resultado final (em construção): https://guoconde.github.io/QuizzBuzz/
