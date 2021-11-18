@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
@@ -27,9 +27,34 @@
 <body>
     <header>BuzzQuizz</header>
     <main class="main">
-        <div class="selected-quizz">
+        <div class="selected-quizz hide">
             <h1>Você não criou nenhum quizz ainda :(</h1>
             <button class="btn-create-quizz" onclick="createQuizz()">Criar Quizz</button>
+        </div>
+        <div class="your-quizz">
+            <div>
+                <h1>Seus Quizzes</h1>
+                <button class="btn-plus" onclick="createQuizz()">+</button>
+            </div>
+            <div class="your-thumbnails">
+                <div class="thumbnail" onclick="openQuizz()">
+                    <img src="./assets/teste.jpg">
+                    <h2>qualquer texto</h2>
+                </div>
+                <div class="thumbnail" onclick="openQuizz()">
+                    <img src="./assets/teste.jpg">
+                    <h2>qualquer texto</h2>
+                </div>
+                <div class="thumbnail" onclick="openQuizz()">
+                    <img src="./assets/teste.jpg">
+                    <h2>qualquer texto</h2>
+                </div>
+                <div class="thumbnail" onclick="openQuizz()">
+                    <img src="./assets/teste.jpg">
+                    <h2>qualquer texto</h2>
+                </div>
+            </div>
+        </div>
         </div>
         <div class="all-quizz show">
             <h1>Todos os Quizzes</h1>
@@ -41,7 +66,18 @@
     <div class="opened-quizz hide">
         <div class="picture">
         </div>
-        
+    </div>
+    <div class="creating-quizz hide">
+        <div class="screen-one">
+            <h1>Comece pelo começo</h1>
+            <div class="form">
+                <input type="text" placeholder="Título do seu quizz">
+                <input type="text" placeholder="URL da imagem do seu quizz">
+                <input type="text" placeholder="Quantidade de perguntas do quizz">
+                <input type="text" placeholder="Quantidade de níveis do quizz">
+            </div>
+            <button class="btn-next" onclick="next()">Prosseguir para criar perguntas</button>
+        </div>
     </div>
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
