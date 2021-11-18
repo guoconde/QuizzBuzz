@@ -41,30 +41,41 @@ function renderQuiz(response){
     const title = data.title;
 
     const showImage = document.querySelector(".picture");
-    const Quizz = document.querySelector(".opened-quizz")
+    const quizz = document.querySelector(".opened-quizz")
     
     showImage.innerHTML = `
         <p class="title">${title}</p>
         <img src="${mainImage}">
     `
+    let answerObject = [];
     for (let i = 0; i < data.questions.length; i++){
-        Quizz.innerHTML += `
+        let texto = `
         <div class="content">
             <p class="title" style="background-color: ${data.questions[i].color};">${data.questions[i].title} </p>
-            
-            `
+            <div class="answers"> `
         for (let j = 0; j < data.questions[i].answers.length; j++){
             const answer = data.questions[i].answers[j];
-            Quizz.innerHTML += `
-                <div class="answers"> 
-                    <div class="option">
-                        <img src="${answer.image}" >
-                        <p>${answer.text}</p>
-                     </div>
-                </div>
-            </div>`
+            answerObject.push (answer);
         }
+        answerObject.sort(()=> {
+            return Math.random() - 0.5;
+        })
+        for (let k = 0; k < answerObject.length; k++ ){
+            console.log("passei aqyi")
+            texto += `
+                <div class="option">
+                    <img src="${answerObject[k].image}" >
+                    <p>${answerObject[k].text}</p>
+                 </div>
+           `
+        }
+        texto += `
+        </div>
+            </div>`
+        quizz.innerHTML += texto;
+        answerObject = [];
     }
+    
 }
 function createQuizz() {
     console.log('Quizz Criado')
