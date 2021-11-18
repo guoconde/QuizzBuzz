@@ -75,12 +75,39 @@
                 <input type="text" placeholder="Quantidade de perguntas do quizz">
                 <input type="text" placeholder="Quantidade de níveis do quizz">
             </div>
-            <button class="btn-next" onclick="next()">Prosseguir para criar perguntas</button>
+            <button class="btn-next" onclick="createAnswers()">Prosseguir para criar perguntas</button>
         </div>
         <div class="screen-two hide">
-            <h1>Comece pelo começo</h1>
+            <h1>Crie suas perguntas</h1>
+            <div class="minimized">
+                <h1>Pergunta 1</h1>
+                <ion-icon name="create-outline"></ion-icon>
+            </div>
             <div class="form">
                 <h1>Pergunta 1</h1>
+                <input type="text" placeholder="Texto da pergunta">
+                <input type="text" placeholder="Cor de fundo da pergunta">
+                <br>
+                <h1>Resposta correta</h1>
+                <input type="text" placeholder="Resposta correta">
+                <input type="text" placeholder="URL da imagem">
+                <br>
+                <h1>Respostas incorretas</h1>
+                <input type="text" placeholder="Resposta incorreta 1">
+                <input type="text" placeholder="URL da imagem 1">
+                <br>
+                <input type="text" placeholder="Resposta incorreta 2">
+                <input type="text" placeholder="URL da imagem 2">
+                <br>
+                <input type="text" placeholder="Resposta incorreta 3">
+                <input type="text" placeholder="URL da imagem 3">
+            </div>
+            <div class="minimized">
+                <h1>Pergunta 2</h1>
+                <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="form">
+                <h1>Pergunta 2</h1>
                 <input type="text" placeholder="Texto da pergunta">
                 <input type="text" placeholder="Cor de fundo da pergunta">
                 <h1>Resposta correta</h1>
@@ -96,12 +123,81 @@
                 <input type="text" placeholder="Resposta incorreta 3">
                 <input type="text" placeholder="URL da imagem 3">
             </div>
-            <button class="btn-next" onclick="next()">Prosseguir para criar perguntas</button>
+            <div class="minimized">
+                <h1>Pergunta 3</h1>
+                <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="form">
+                <h1>Pergunta 3</h1>
+                <input type="text" placeholder="Texto da pergunta">
+                <input type="text" placeholder="Cor de fundo da pergunta">
+                <h1>Resposta correta</h1>
+                <input type="text" placeholder="Resposta correta">
+                <input type="text" placeholder="URL da imagem">
+                <h1>Respostas incorretas</h1>
+                <input type="text" placeholder="Resposta incorreta 1">
+                <input type="text" placeholder="URL da imagem 1">
+                <br>
+                <input type="text" placeholder="Resposta incorreta 2">
+                <input type="text" placeholder="URL da imagem 2">
+                <br>
+                <input type="text" placeholder="Resposta incorreta 3">
+                <input type="text" placeholder="URL da imagem 3">
+            </div>
+            <button class="btn-next" onclick="createLevel()">Prosseguir para criar níveis</button>
+        </div>
+        <div class="screen-three hide">
+            <h1>Agora, decida os níveis</h1>
+            <div class="minimized">
+                <h1>Nível 1</h1>
+                <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="form">
+                <h1>Nível 1</h1>
+                <input type="text" placeholder="Título do nível">
+                <input type="text" placeholder="% de acerto mínima">
+                <input type="text" placeholder="URL da imagem do nível">
+                <input type="text" placeholder="Descrição do nível">
+            </div>
+            <div class="minimized">
+                <h1>Nível 2</h1>
+                <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="form">
+                <h1>Nível 2</h1>
+                <input type="text" placeholder="Título do nível">
+                <input type="text" placeholder="% de acerto mínima">
+                <input type="text" placeholder="URL da imagem do nível">
+                <input type="text" placeholder="Descrição do nível">
+            </div>
+            <div class="minimized">
+                <h1>Nível 3</h1>
+                <ion-icon name="create-outline"></ion-icon>
+            </div>
+            <div class="form">
+                <h1>Nível 3</h1>
+                <input type="text" placeholder="Título do nível">
+                <input type="text" placeholder="% de acerto mínima">
+                <input type="text" placeholder="URL da imagem do nível">
+                <input type="text" placeholder="Descrição do nível">
+            </div>
+            <button class="btn-next" onclick="finishQuizz()">Finalizar Quizz</button>
+        </div>
+        <div class="screen-four">
+            <h1>Seu quizz está pronto!</h1>
+            <div class="thumbnail quizz-done">
+                <img src="./assets/teste.jpg">
+                <h2>Texto Texto Texto</h2>
+            </div>
+            <button class="btn-next" onclick="goToQuizz()">Finalizar Quizz</button>
+            <button class="btn-comeback" onclick="comeback()">Voltar pra home</button>
         </div>
     </div>
 
     
 
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="./js/main.js"></script>
 </body>
