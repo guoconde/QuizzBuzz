@@ -35,14 +35,14 @@ function openQuizz(element) {
     const promise = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${element}`)
     promise.then(renderQuiz)
 }
-function renderQuiz(response){
+function renderQuiz(response) {
     const data = response.data;
     const mainImage = data.image;
     const title = data.title;
 
     const showImage = document.querySelector(".picture");
-    const quizz = document.querySelector(".opened-quizz")
-    
+    const Quizz = document.querySelector(".opened-quizz")
+
     showImage.innerHTML = `
         <p class="title">${title}</p>
         <img src="${mainImage}">
@@ -77,6 +77,15 @@ function renderQuiz(response){
     }
     
 }
+
 function createQuizz() {
-    console.log('Quizz Criado')
+    const main = document.querySelector('.main')
+    const creatingQuizz = document.querySelector('.creating-quizz')
+
+    main.classList.add('hide')
+    creatingQuizz.classList.remove('hide')
+}
+
+function next() {
+    console.log('proximo')
 }
