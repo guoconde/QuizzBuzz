@@ -51,24 +51,21 @@ function renderQuiz(response){
         Quizz.innerHTML += `
         <div class="content">
             <p class="title" style="background-color: ${data.questions[i].color};">${data.questions[i].title} </p>
-            <div class="answers">
-               
-            </div>
-        </div>
+            
             `
-    
+        for (let j = 0; j < data.questions[i].answers.length; j++){
+            const answer = data.questions[i].answers[j];
+            Quizz.innerHTML += `
+                <div class="answers"> 
+                    <div class="option">
+                        <img src="${answer.image}" >
+                        <p>${answer.text}</p>
+                     </div>
+                </div>
+            </div>`
+        }
     }
 }
 function createQuizz() {
     console.log('Quizz Criado')
 }
-${(data.questions[i]) => {
-    for (let j = 0; j < data.questions[i].answers.length; j++){
-        const answer = data.questions[i].answers[j];
-        Quizz.innerHTML += `
-                <div class="option">
-                    <img src="${answer.image}" >
-                    <p>${answer.text}</p>
-                 </div>`
-}
-}}
