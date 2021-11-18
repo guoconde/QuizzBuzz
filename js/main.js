@@ -42,7 +42,7 @@ function renderQuiz(response){
 
     const showImage = document.querySelector(".picture");
     const Quizz = document.querySelector(".opened-quizz")
-
+    
     showImage.innerHTML = `
         <p class="title">${title}</p>
         <img src="${mainImage}">
@@ -50,12 +50,25 @@ function renderQuiz(response){
     for (let i = 0; i < data.questions.length; i++){
         Quizz.innerHTML += `
         <div class="content">
-            <p class="title">${data.questions[i].title}</p>
-            <div class="answers"> 
+            <p class="title" style="background-color: ${data.questions[i].color};">${data.questions[i].title} </p>
+            <div class="answers">
+               
             </div>
-        </div>`
+        </div>
+            `
+    
     }
 }
 function createQuizz() {
     console.log('Quizz Criado')
 }
+${(data.questions[i]) => {
+    for (let j = 0; j < data.questions[i].answers.length; j++){
+        const answer = data.questions[i].answers[j];
+        Quizz.innerHTML += `
+                <div class="option">
+                    <img src="${answer.image}" >
+                    <p>${answer.text}</p>
+                 </div>`
+}
+}}
