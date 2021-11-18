@@ -41,7 +41,7 @@ function renderQuiz(response) {
     const title = data.title;
 
     const showImage = document.querySelector(".picture");
-    const Quizz = document.querySelector(".opened-quizz")
+    const quizz = document.querySelector(".opened-quizz")
 
     showImage.innerHTML = `
         <p class="title">${title}</p>
