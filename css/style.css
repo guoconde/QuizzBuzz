@@ -341,6 +341,7 @@ input {
 
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
     background-color: #FFFFFF;
+    margin-bottom: 50px;
 }
 .output .title {
     width: 100%;
@@ -377,6 +378,30 @@ input {
     line-height: 25px;
     letter-spacing: 0em;
     text-align: left;
+}
+.buttons {
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 25px;
+    letter-spacing: 0em;
+    text-align: center;
+    margin: 0 auto;
+}
+.btn-restart {
+    width: 260px;
+    height: 52px;
+    margin-bottom: 16px;
+
+    border: none;
+    border-radius: 15px;
+
+    background-color:  #EC362D;
+    color:  #FFF5F4;
+}
+.btn-comeback {
+    width: 260px;
+    height: 52px;
+    color: #818181;
 }
 
 .answers .not-selected {

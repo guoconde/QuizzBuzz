@@ -4,7 +4,8 @@ let numOfQuestions = 0;
 let replied = 0;
 let levels = [];
 let scrollTo = 0;
-
+let responseObject;
+let data;
 
 axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
     .then(el => {
@@ -27,9 +28,6 @@ function openQuizz(element) {
     const hideMain = document.querySelector('.main')
     const showQuizz = document.querySelector('.opened-quizz')
 
-    console.log(hideMain)
-    console.dir(hideMain)
-
     if (hideMain != null) {
         hideMain.classList.remove('show')
         hideMain.classList.add('hide')
@@ -43,12 +41,17 @@ function openQuizz(element) {
 }
 const quizz = document.querySelector(".opened-quizz");
 function renderQuiz(response) {
-    const data = response.data;
+    responseObject = response;
+    data = responseObject.data
     numOfQuestions = data.questions.length;
+    
+    quizz.innerHTML += `<div class="picture">
+    </div>`
+
     const mainImage = data.image;
     const title = data.title;
-    const showImage = document.querySelector(".picture");
 
+    const showImage = document.querySelector(".picture");
     showImage.innerHTML = `
         <p class="title">${title}</p>
         <img src="${mainImage}">
@@ -152,10 +155,41 @@ function pickOption(element, isCorrect) {
         setTimeout(()=> {
             const output = document.querySelector('.output .info')
             output.scrollIntoView();
+            quizz.innerHTML += `
+             <nav class = 'buttons' >
+                <button class="btn-restart" onclick="restart()"> Reiniciar Quizz</button> <br>
+                <button class="btn-comeback"onclick= "comeback()">Voltar pra home</button>
+            </nav>`
         }, 2000)
+
     }
 }
+function restart () {
+    window.scroll(0, 0)
+    const selected = document.querySelectorAll('.opened-quizz .selected')
+    const notSelected = document.querySelectorAll('.opened-quizz .not-selected')
 
+    for (let i = 0; i < selected.length; i++) {
+        const element = selected[i];
+        element.classList.remove("selected")
+    }
+    for (let i = 0; i < notSelected.length; i++) {
+        const element = notSelected[i];
+        element.classList.remove("not-selected")
+    }
+    scrollTo = 0;
+    points = 0;
+    replied = 0;
+    quizz.innerHTML = ""
+    renderQuiz(responseObject)
+}
+function comeback(){
+    document.querySelector(".main").classList.remove("hide")
+    document.querySelector(".main").classList.remove("show")
+    document.querySelector(".opened-quizz").classList.remove("show")
+    document.querySelector(".opened-quizz").classList.add("hide")
+    
+}
 function createQuizz() {
     const main = document.querySelector('.main')
     const creatingQuizz = document.querySelector('.creating-quizz')
