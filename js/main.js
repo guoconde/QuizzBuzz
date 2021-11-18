@@ -35,13 +35,13 @@ function openQuizz(element) {
     const promise = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${element}`)
     promise.then(renderQuiz)
 }
+const quizz = document.querySelector(".opened-quizz");
 function renderQuiz(response) {
     const data = response.data;
     const mainImage = data.image;
     const title = data.title;
 
     const showImage = document.querySelector(".picture");
-    const quizz = document.querySelector(".opened-quizz")
 
     showImage.innerHTML = `
         <p class="title">${title}</p>
