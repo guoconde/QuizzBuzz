@@ -4,8 +4,6 @@ axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
     .then(el => {
         getThumbnails.innerHTML = ''
 
-        console.log(el.data)
-
         for (let i = 0; i < el.data.length; i++) {
             getThumbnails.innerHTML += `
                 <div class="thumbnail" onclick="openQuizz(this)">
@@ -20,7 +18,19 @@ axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
     })
 
 function openQuizz(element) {
-    console.log(element)
+    const hideMain = document.querySelector('.main')
+    const showQuizz = document.querySelector('.opened-quizz')
+
+    console.log(hideMain)
+    console.dir(hideMain)
+
+    if (hideMain != null) {
+        hideMain.classList.remove('show')
+        hideMain.classList.add('hide')
+    }
+
+    showQuizz.classList.remove('hide')
+    showQuizz.classList.add('show')
 }
 
 function createQuizz() {
