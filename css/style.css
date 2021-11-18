@@ -265,20 +265,45 @@ input {
 
 .creating-quizz {
     margin-top: 140px;
+    margin-bottom: 140px;
 }
 
 .screen-one,
-.screen-two {
+.screen-two,
+.screen-three,
+.screen-four {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .screen-one h1,
-.screen-two h1 {
+.screen-two h1,
+.screen-three h1,
+.screen-four {
     font-size: 23px;
     font-weight: 700;
     line-height: 27px;
+}
+
+.minimized {
+    width: 600px;
+    height: 74px;
+
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 25px;
+    margin-top: 30px;
+}
+
+.minimized ion-icon {
+    font-size: 20px;
+    color: black;
 }
 
 .creating-quizz .form {
@@ -289,11 +314,11 @@ input {
 
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 10px;
 
     padding: 20px 0;
 
+    padding-left: 25px;
     margin-top: 30px;
 }
 
@@ -389,6 +414,14 @@ input {
 
 .not-selected #false, .selected #false{
     color: #FF4B4B;
+}
+
+.thumbnail.quizz-done {
+    width: 500px;
+    height: 266px;
+
+    margin-top: 50px;
+    margin-bottom: -20px;
 }
 
 .show {

@@ -87,7 +87,7 @@ function renderQuiz(response) {
 }
 function pickOption(element, isCorrect) {
     const content = document.querySelectorAll('.opened-quizz .content')
-    setTimeout (()=>{
+    setTimeout(() => {
         const content = document.querySelectorAll('.opened-quizz .content')
         scrollTo++
         return content[scrollTo].scrollIntoView();
@@ -109,16 +109,16 @@ function pickOption(element, isCorrect) {
     if (isCorrect === true) {
         points++
     }
-    if (replied  === numOfQuestions) {
-        let score = (points/ numOfQuestions) * 100;
+    if (replied === numOfQuestions) {
+        let score = (points / numOfQuestions) * 100;
         score = Math.floor(score);
         for (let i = 0; i < levels.length; i++) {
             const item = levels[i]
-            
-            if (item === undefined){
-                let title = levels[i-1].title;
-                const text = levels[i-1].text;
-                const image = levels[i-1].image;
+
+            if (item === undefined) {
+                let title = levels[i - 1].title;
+                const text = levels[i - 1].text;
+                const image = levels[i - 1].image;
                 quizz.innerHTML += `
                 <div class="output">
                     <p class="title">${score}% de acerto: ${title}</p>
@@ -131,7 +131,7 @@ function pickOption(element, isCorrect) {
                 break;
             }
             const value = item.minValue
-            if (score <= value ){
+            if (score <= value) {
                 let title = levels[i].title;
                 const text = levels[i].text;
                 const image = levels[i].image;
@@ -146,10 +146,10 @@ function pickOption(element, isCorrect) {
                 `
                 break;
             }
-            
+
         }
 
-        setTimeout(()=> {
+        setTimeout(() => {
             const output = document.querySelector('.output .info')
             output.scrollIntoView();
         }, 2000)
@@ -164,6 +164,18 @@ function createQuizz() {
     creatingQuizz.classList.remove('hide')
 }
 
-function next() {
+function createAnswers() {
+    console.log('proximo')
+}
+
+function createLevel() {
+    console.log('proximo')
+}
+
+function finishQuizz() {
+    console.log('proximo')
+}
+
+function goToQuizz() {
     console.log('proximo')
 }
