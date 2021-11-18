@@ -113,8 +113,25 @@ function pickOption(element, isCorrect) {
         let score = (points/ numOfQuestions) * 100;
         score = Math.floor(score);
         for (let i = 0; i < levels.length; i++) {
-            const Value = levels[i].minValue;
-            if (score <= Value){
+            const item = levels[i]
+            
+            if (item === undefined){
+                let title = levels[i-1].title;
+                const text = levels[i-1].text;
+                const image = levels[i-1].image;
+                quizz.innerHTML += `
+                <div class="output">
+                    <p class="title">${score}% de acerto: ${title}</p>
+                    <div class="info">
+                        <img src="${image}" >
+                        <p class="text">${text}</p>
+                     </div>
+                </div>
+                `
+                break;
+            }
+            const value = item.minValue
+            if (score <= value ){
                 let title = levels[i].title;
                 const text = levels[i].text;
                 const image = levels[i].image;
@@ -129,6 +146,7 @@ function pickOption(element, isCorrect) {
                 `
                 break;
             }
+            
         }
 
         setTimeout(()=> {
