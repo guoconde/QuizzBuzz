@@ -29,14 +29,18 @@
     <main>
         <div class="quizz-selected">
             <h1>Você não criou nenhum quizz ainda :(</h1>
-            <button class="btn-create-quizz">Criar Quizz</button>
+            <button class="btn-create-quizz" onclick="createQuizz()">Criar Quizz</button>
         </div>
-        <div class="all-quizz">
+        <div class="all-quizz show">
             <h1>Todos os Quizzes</h1>
-            <div class="thumbnails"></div>
+            <div class="thumbnails">
+
+            </div>
         </div>
+        <div class="opened-quizz hide"></div>
     </main>
 
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="./js/main.js"></script>
 </body>
 
