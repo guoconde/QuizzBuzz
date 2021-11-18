@@ -10,16 +10,32 @@
     <meta name="keywords" content="HTML, CSS, JS">
     <meta name="Gustavo Conde / Kayque Coelho" content="BuzzQuizz">
 
-    <link rel="shortcut icon" href="" type="image/x-icon">
+    <link rel="shortcut icon" href="./assets/buzzquizz-favIcon.png" type="image/x-icon">
 
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
 
     <title>BuzzQuizz</title>
 </head>
 
 <body>
-    <h1>Titulo</h1>
+    <header>BuzzQuizz</header>
+    <main>
+        <div class="quizz-selected">
+            <h1>Você não criou nenhum quizz ainda :(</h1>
+            <button class="btn-create-quizz">Criar Quizz</button>
+        </div>
+        <div class="all-quizz">
+            <h1>Todos os Quizzes</h1>
+            <div class="thumbnails"></div>
+        </div>
+    </main>
 
     <script src="./js/main.js"></script>
 </body>
