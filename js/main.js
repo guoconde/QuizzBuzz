@@ -216,6 +216,17 @@ function comeback() {
     replied = 0;
     levels = [];
     scrollTo = 0;
+
+    document.querySelector('.screen-one .form input:first-child').value = ''
+    document.querySelector('.screen-one .form input:nth-child(2)').value = ''
+    document.querySelector('.screen-one .form input:nth-child(3)').value = ''
+    document.querySelector('.screen-one .form input:nth-child(4)').value = ''
+    newQuestions.title = ''
+    newQuestions.image = ''
+    newQuestions.nQuestions = ''
+    newQuestions.nLevel = ''
+    newQuestions.questions = []
+    newQuestions.levels = []
 }
 
 
