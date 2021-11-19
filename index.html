@@ -25,8 +25,8 @@
 </head>
 
 <body>
-    <header>BuzzQuizz</header>
-    <main class="main">
+    <header onclick="window.location.reload()" style="cursor: pointer;">BuzzQuizz</header>
+    <main class="main hide">
         <div class="selected-quizz hide">
             <h1>Você não criou nenhum quizz ainda :(</h1>
             <button class="btn-create-quizz" onclick="createQuizz()">Criar Quizz</button>
@@ -67,14 +67,35 @@
         <div class="picture">
         </div>
     </div>
-    <div class="creating-quizz hide">
-        <div class="screen-one">
+    <div class="creating-quizz">
+        <div class="screen-one hide">
             <h1>Comece pelo começo</h1>
             <div class="form">
                 <input type="text" placeholder="Título do seu quizz">
                 <input type="text" placeholder="URL da imagem do seu quizz">
                 <input type="text" placeholder="Quantidade de perguntas do quizz">
                 <input type="text" placeholder="Quantidade de níveis do quizz">
+            </div>
+            <button class="btn-next" onclick="next()">Prosseguir para criar perguntas</button>
+        </div>
+        <div class="screen-two">
+            <h1>Comece pelo começo</h1>
+            <div class="form">
+                <h1>Pergunta 1</h1>
+                <input type="text" placeholder="Texto da pergunta">
+                <input type="text" placeholder="Cor de fundo da pergunta">
+                <h1>Resposta correta</h1>
+                <input type="text" placeholder="Resposta correta">
+                <input type="text" placeholder="URL da imagem">
+                <h1>Respostas incorretas</h1>
+                <input type="text" placeholder="Resposta incorreta 1">
+                <input type="text" placeholder="URL da imagem 1">
+                <br>
+                <input type="text" placeholder="Resposta incorreta 2">
+                <input type="text" placeholder="URL da imagem 2">
+                <br>
+                <input type="text" placeholder="Resposta incorreta 3">
+                <input type="text" placeholder="URL da imagem 3">
             </div>
             <button class="btn-next" onclick="next()">Prosseguir para criar perguntas</button>
         </div>

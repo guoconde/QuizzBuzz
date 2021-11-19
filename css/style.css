@@ -267,13 +267,15 @@ input {
     margin-top: 140px;
 }
 
-.screen-one {
+.screen-one,
+.screen-two {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.screen-one h1 {
+.screen-one h1,
+.screen-two h1 {
     font-size: 23px;
     font-weight: 700;
     line-height: 27px;
@@ -377,6 +379,17 @@ input {
     text-align: left;
 }
 
+.answers .not-selected {
+    opacity: 0.3;
+}
+
+.not-selected #true, .selected #true{
+    color: #009C22;
+}
+
+.not-selected #false, .selected #false{
+    color: #FF4B4B;
+}
 
 .show {
     opacity: 1;
@@ -385,16 +398,4 @@ input {
 
 .hide {
     display: none;
-}
-
-.answers .not-selected {
-    opacity: 0.3;
-}
-.not-selected #true, .selected #true{
-    color: #009C22;
-    
-
-}
-.not-selected #false, .selected #false{
-    color: #FF4B4B;
 }
