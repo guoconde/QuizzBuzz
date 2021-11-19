@@ -7,6 +7,12 @@ let scrollTo = 0;
 let responseObject;
 let data;
 
+const main = document.querySelector('.main')
+const screenOne = document.querySelector('.screen-one')
+const screenTwo = document.querySelector('.screen-two')
+const screenThree = document.querySelector('.screen-three')
+const screenFour = document.querySelector('.screen-four')
+
 axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
     .then(el => {
         getThumbnails.innerHTML = ''
@@ -198,31 +204,24 @@ function comeback() {
     document.querySelector(".main").classList.remove("show")
     document.querySelector(".opened-quizz").classList.remove("show")
     document.querySelector(".opened-quizz").classList.add("hide")
+    screenFour.classList.add('hide')
+
     scrollTo = 0;
     points = 0;
     replied = 0;
 }
 
 function createQuizz() {
-    const main = document.querySelector('.main')
-    const screenOne = document.querySelector('.screen-one')
-
     main.classList.add('hide')
     screenOne.classList.remove('hide')
 }
 
 function createAnswers() {
-    const screenOne = document.querySelector('.screen-one')
-    const screenTwo = document.querySelector('.screen-two')
-
     screenOne.classList.add('hide')
     screenTwo.classList.remove('hide')
 }
 
 function createLevel() {
-    const screenTwo = document.querySelector('.screen-two')
-    const screenThree = document.querySelector('.screen-three')
-
     screenTwo.classList.add('hide')
     screenThree.classList.remove('hide')
 
@@ -230,9 +229,6 @@ function createLevel() {
 }
 
 function finishQuizz() {
-    const screenThree = document.querySelector('.screen-three')
-    const screenFour = document.querySelector('.screen-four')
-
     screenThree.classList.add('hide')
     screenFour.classList.remove('hide')
 }

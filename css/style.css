@@ -452,6 +452,7 @@ input {
     z-index: 1;
 } */
 
-.hide {
+.hide,
+.form.hide {
     display: none;
 }
