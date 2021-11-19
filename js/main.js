@@ -13,21 +13,15 @@ const screenTwo = document.querySelector('.screen-two')
 const screenThree = document.querySelector('.screen-three')
 const screenFour = document.querySelector('.screen-four')
 
+let nQuestions = ''
+let nLevel = ''
+
 let newQuestions = {
     id: '',
     title: '',
     image: '',
-    nQuestions: '',
-    nLevel: '',
     questions: [],
-    levels: [
-        {
-            title: '',
-            image: '',
-            text: '',
-            nimValue: ''
-        },
-    ]
+    levels: []
 }
 
 axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
@@ -221,10 +215,10 @@ function comeback() {
     document.querySelector('.screen-one .form input:nth-child(2)').value = ''
     document.querySelector('.screen-one .form input:nth-child(3)').value = ''
     document.querySelector('.screen-one .form input:nth-child(4)').value = ''
+    nQuestions = ''
+    nLevel = ''
     newQuestions.title = ''
     newQuestions.image = ''
-    newQuestions.nQuestions = ''
-    newQuestions.nLevel = ''
     newQuestions.questions = []
     newQuestions.levels = []
 }
@@ -238,8 +232,8 @@ function createQuizz() {
 function createAnswers() {
     newQuestions.title = document.querySelector('.screen-one .form input:first-child').value
     newQuestions.image = document.querySelector('.screen-one .form input:nth-child(2)').value
-    newQuestions.nQuestions = document.querySelector('.screen-one .form input:nth-child(3)').value
-    newQuestions.nLevel = document.querySelector('.screen-one .form input:nth-child(4)').value
+    nQuestions = document.querySelector('.screen-one .form input:nth-child(3)').value
+    nLevel = document.querySelector('.screen-one .form input:nth-child(4)').value
 
     screenTwo.innerHTML = `
         <h1>Crie suas perguntas</h1>
@@ -268,14 +262,14 @@ function createAnswers() {
         </div>
     `
 
-    if (newQuestions.title === '' && newQuestions.image === '' && newQuestions.nQuestions === '' && newQuestions.nLevel === '') {
+    if (newQuestions.title === '' && newQuestions.image === '' && nQuestions === '' && nLevel === '') {
         alert('Preencha Todos os Campos')
     } else {
         screenOne.classList.add('hide')
         screenTwo.classList.remove('hide')
     }
 
-    for (let i = 2; i <= newQuestions.nQuestions; i++) {
+    for (let i = 2; i <= nQuestions; i++) {
         screenTwo.innerHTML +=
             `<div class="minimized">
                 <h1>Pergunta ${i}</h1>
@@ -307,11 +301,10 @@ function createAnswers() {
 
 function createLevel() {
     const ifNotValue = []
-    const inputValueTeste = document.querySelectorAll('.screen-two .form input.mandatory')
+    const inputValueMandatory = document.querySelectorAll('.screen-two .form input.mandatory')
     const inputValue = document.querySelectorAll('.screen-two .form input')
 
-    for (let i = 0; i < newQuestions.nQuestions; i++) {
-        // for (let j = 0; j < inputValue.length; j++) {
+    for (let i = 0; i < nQuestions; i++) {
         newQuestions.questions[i] = {
             title: inputValue[0].value,
             color: inputValue[1].value,
@@ -340,7 +333,6 @@ function createLevel() {
                 image: inputValue[9].value,
                 isCorrectAnswer: false,
             }
-        // }
     }
 
     screenThree.innerHTML = `
@@ -358,15 +350,7 @@ function createLevel() {
         </div>
     `
 
-
-    if (newQuestions.title === '' && newQuestions.image === '' && newQuestions.nQuestions === '' && newQuestions.nLevel === '') {
-        alert('Preencha Todos os Campos')
-    } else {
-        screenOne.classList.add('hide')
-        screenTwo.classList.remove('hide')
-    }
-
-    for (let i = 2; i <= newQuestions.nLevel; i++) {
+    for (let i = 2; i <= nLevel; i++) {
         screenThree.innerHTML += `
             <div class="minimized">
                 <h1>Nível ${i}</h1>
@@ -384,8 +368,8 @@ function createLevel() {
 
     screenThree.innerHTML += `<button class="btn" onclick="finishQuizz()">Finalizar Quizz</button>`
 
-    for (let i = 0; i < inputValueTeste.length; i++) {
-        ifNotValue.push(inputValueTeste[i].value)
+    for (let i = 0; i < inputValueMandatory.length; i++) {
+        ifNotValue.push(inputValueMandatory[i].value)
     }
     if (ifNotValue.includes('')) {
         alert('Preencha Todos os Campos')
@@ -398,8 +382,37 @@ function createLevel() {
 }
 
 function finishQuizz() {
-    screenThree.classList.add('hide')
-    screenFour.classList.remove('hide')
+    const ifNotValue = []
+    const inputValue = document.querySelectorAll('.screen-three .form input')
+
+    for (let i = 0; i < nLevel; i++) {
+        newQuestions.levels[i] = {
+            title: inputValue[0].value,
+            nimValue: inputValue[1].value,
+            image: inputValue[2].value,
+            text: inputValue[3].value,
+        }
+    }
+
+    screenFour.innerHTML = `
+        <h1>Seu quizz está pronto!</h1>
+        <div class="thumbnail quizz-done">
+            <img src="./assets/teste.jpg">
+            <h2>Texto Texto Texto</h2>
+        </div>
+        <button class="btn" onclick="goToQuizz()">Acessar Quizz</button>
+        <button class="btn-comeback" onclick="comeback()">Voltar pra home</button>
+    `
+
+    for (let i = 0; i < inputValue.length; i++) {
+        ifNotValue.push(inputValue[i].value)
+    }
+    if (ifNotValue.includes('')) {
+        alert('Preencha Todos os Campos')
+    } else {
+        screenThree.classList.add('hide')
+        screenFour.classList.remove('hide')
+    }
 }
 
 function goToQuizz() {
