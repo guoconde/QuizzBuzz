@@ -65,7 +65,9 @@ function renderQuiz(response) {
     let answerObject = [];
 
     for (let i = 0; i < data.questions.length; i++) {
-        levels.push(data.levels[i])
+        if (data.levels[i] !== undefined) {
+            levels.push(data.levels[i])
+        }
         let text = `
         <div class="content">
             <p class="title" style="background-color: ${data.questions[i].color};">${data.questions[i].title} </p>
@@ -95,6 +97,13 @@ function renderQuiz(response) {
         quizz.innerHTML += text;
         answerObject = [];
     }
+
+
+    setTimeout(() => {
+        const content = document.querySelectorAll('.opened-quizz .content')
+        content[scrollTo].scrollIntoView();
+        scrollTo++
+    }, 2000)
 }
 
 function pickOption(element, isCorrect) {
@@ -102,8 +111,8 @@ function pickOption(element, isCorrect) {
 
     setTimeout(() => {
         const content = document.querySelectorAll('.opened-quizz .content')
+        content[scrollTo].scrollIntoView();
         scrollTo++
-        return content[scrollTo].scrollIntoView();
     }, 2000)
 
     const parent = element.parentElement;
@@ -129,43 +138,23 @@ function pickOption(element, isCorrect) {
     if (replied === numOfQuestions) {
         let score = (points / numOfQuestions) * 100;
         score = Math.floor(score);
+        let group;
         for (let i = 0; i < levels.length; i++) {
-            const item = levels[i]
+            let value = levels[i];
 
-            if (item === undefined) {
-                let title = levels[i - 1].title;
-                const text = levels[i - 1].text;
-                const image = levels[i - 1].image;
-                quizz.innerHTML += `
-                <div class="output">
-                    <p class="title">${score}% de acerto: ${title}</p>
-                    <div class="info">
-                        <img src="${image}" >
-                        <p class="text">${text}</p>
-                     </div>
-                </div>
-                `
-                break;
-            }
-
-            const value = item.minValue
-
-            if (score <= value) {
-                let title = levels[i].title;
-                const text = levels[i].text;
-                const image = levels[i].image;
-                quizz.innerHTML += `
-                <div class="output">
-                    <p class="title">${score}% de acerto: ${title}</p>
-                    <div class="info">
-                        <img src="${image}" >
-                        <p class="text">${text}</p>
-                     </div>
-                </div>
-                `
-                break;
+            if (score >= value.minValue) {
+                group = value;
             }
         }
+        quizz.innerHTML += `
+            <div class="output">
+                <p class="title">${score}% de acerto: ${ group.title}</p>
+                <div class="info">
+                    <img src="${group.image}" >
+                    <p class="text">${group.text}</p>
+                 </div>
+            </div>
+            `
 
         setTimeout(() => {
             const output = document.querySelector('.output .info')
@@ -179,7 +168,6 @@ function pickOption(element, isCorrect) {
 }
 
 function restart() {
-
     window.scroll(0, 0)
     const selected = document.querySelectorAll('.opened-quizz .selected')
     const notSelected = document.querySelectorAll('.opened-quizz .not-selected')
@@ -195,7 +183,7 @@ function restart() {
     scrollTo = 0;
     points = 0;
     replied = 0;
-    quizz.innerHTML = ""
+    levels = [];
     renderQuiz(responseObject)
 }
 
@@ -206,9 +194,11 @@ function comeback() {
     document.querySelector(".opened-quizz").classList.add("hide")
     screenFour.classList.add('hide')
 
-    scrollTo = 0;
     points = 0;
+    numOfQuestions = 0;
     replied = 0;
+    levels = [];
+    scrollTo = 0;
 }
 
 function createQuizz() {
@@ -217,6 +207,8 @@ function createQuizz() {
 }
 
 function createAnswers() {
+
+
     screenOne.classList.add('hide')
     screenTwo.classList.remove('hide')
 }
