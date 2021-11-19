@@ -20,33 +20,32 @@ axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
             `
         }
     })
-    .catch(() => {
-        console.log('deu erro no get1')
-    })
+    .catch(getError)
 
 function openQuizz(element) {
     const hideMain = document.querySelector('.main')
     const showQuizz = document.querySelector('.opened-quizz')
 
     if (hideMain != null) {
-        hideMain.classList.remove('show')
         hideMain.classList.add('hide')
     }
 
     showQuizz.classList.remove('hide')
-    showQuizz.classList.add('show')
 
-    const promise = axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${element}`)
-    promise.then(renderQuiz)
+    axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${element}`)
+        .then(renderQuiz)
+        .catch(getError)
 }
+
 const quizz = document.querySelector(".opened-quizz");
+
 function renderQuiz(response) {
     responseObject = response;
     data = responseObject.data
     numOfQuestions = data.questions.length;
-    
-    quizz.innerHTML += `<div class="picture">
-    </div>`
+
+    quizz.innerHTML = ''
+    quizz.innerHTML += `<div class="picture"></div>`
 
     const mainImage = data.image;
     const title = data.title;
@@ -56,7 +55,9 @@ function renderQuiz(response) {
         <p class="title">${title}</p>
         <img src="${mainImage}">
     `
+
     let answerObject = [];
+
     for (let i = 0; i < data.questions.length; i++) {
         levels.push(data.levels[i])
         let text = `
@@ -71,6 +72,7 @@ function renderQuiz(response) {
         answerObject.sort(() => {
             return Math.random() - 0.5;
         })
+
         for (let k = 0; k < answerObject.length; k++) {
 
             text += `
@@ -80,27 +82,31 @@ function renderQuiz(response) {
                  </div>
            `
         }
+
         text += `
-        </div>
+                </div>
             </div>`
         quizz.innerHTML += text;
         answerObject = [];
     }
-
 }
+
 function pickOption(element, isCorrect) {
-    const content = document.querySelectorAll('.opened-quizz .content')
+    // const content = document.querySelectorAll('.opened-quizz .content')
+
     setTimeout(() => {
         const content = document.querySelectorAll('.opened-quizz .content')
         scrollTo++
         return content[scrollTo].scrollIntoView();
     }, 2000)
+
     const parent = element.parentElement;
     const children = parent.children;
 
     if (element.classList.contains("selected") || element.classList.contains("not-selected")) {
         return;
     }
+
     replied++
     element.classList.add("selected")
 
@@ -109,9 +115,11 @@ function pickOption(element, isCorrect) {
             children[i].classList.add("not-selected")
         }
     }
+
     if (isCorrect === true) {
         points++
     }
+
     if (replied === numOfQuestions) {
         let score = (points / numOfQuestions) * 100;
         score = Math.floor(score);
@@ -133,7 +141,9 @@ function pickOption(element, isCorrect) {
                 `
                 break;
             }
+
             const value = item.minValue
+
             if (score <= value) {
                 let title = levels[i].title;
                 const text = levels[i].text;
@@ -149,22 +159,21 @@ function pickOption(element, isCorrect) {
                 `
                 break;
             }
-
         }
 
         setTimeout(() => {
             const output = document.querySelector('.output .info')
             output.scrollIntoView();
             quizz.innerHTML += `
-             <nav class = 'buttons' >
-                <button class="btn-restart" onclick="restart()"> Reiniciar Quizz</button> <br>
+                <button class="btn" onclick="restart()"> Reiniciar Quizz</button>
                 <button class="btn-comeback"onclick= "comeback()">Voltar pra home</button>
-            </nav>`
+            `
         }, 2000)
-
     }
 }
-function restart () {
+
+function restart() {
+
     window.scroll(0, 0)
     const selected = document.querySelectorAll('.opened-quizz .selected')
     const notSelected = document.querySelectorAll('.opened-quizz .not-selected')
@@ -183,33 +192,55 @@ function restart () {
     quizz.innerHTML = ""
     renderQuiz(responseObject)
 }
-function comeback(){
+
+function comeback() {
     document.querySelector(".main").classList.remove("hide")
     document.querySelector(".main").classList.remove("show")
     document.querySelector(".opened-quizz").classList.remove("show")
     document.querySelector(".opened-quizz").classList.add("hide")
-    
+    scrollTo = 0;
+    points = 0;
+    replied = 0;
 }
+
 function createQuizz() {
     const main = document.querySelector('.main')
-    const creatingQuizz = document.querySelector('.creating-quizz')
+    const screenOne = document.querySelector('.screen-one')
 
     main.classList.add('hide')
-    creatingQuizz.classList.remove('hide')
+    screenOne.classList.remove('hide')
 }
 
 function createAnswers() {
-    console.log('proximo')
+    const screenOne = document.querySelector('.screen-one')
+    const screenTwo = document.querySelector('.screen-two')
+
+    screenOne.classList.add('hide')
+    screenTwo.classList.remove('hide')
 }
 
 function createLevel() {
-    console.log('proximo')
+    const screenTwo = document.querySelector('.screen-two')
+    const screenThree = document.querySelector('.screen-three')
+
+    screenTwo.classList.add('hide')
+    screenThree.classList.remove('hide')
+
+    window.scroll(0, 0)
 }
 
 function finishQuizz() {
-    console.log('proximo')
+    const screenThree = document.querySelector('.screen-three')
+    const screenFour = document.querySelector('.screen-four')
+
+    screenThree.classList.add('hide')
+    screenFour.classList.remove('hide')
 }
 
 function goToQuizz() {
     console.log('proximo')
+}
+
+function getError(er) {
+    console.log(er)
 }

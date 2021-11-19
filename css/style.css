@@ -181,86 +181,90 @@ input {
 
 .opened-quizz {
     width: 100%;
-    height: 600px;
     
-
     position: absolute;
     top: 69px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
 .picture {
     width: 100%;
     height: 227px;
+
     position: relative;
     overflow: hidden;
+
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.57), rgba(0, 0, 0, 0.57));
 
-    margin-bottom: 42px;
+    margin-bottom: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
+    font-size: 39px;
+    font-weight: 400;
+    line-height: 46px;
+    color: #FFFFFF;
 }
+
 .picture img {
-    position: absolute;
-    z-index: -1;
     width: 100%;
+
+    z-index: -1;
 }
 
 .picture .title {
     position: absolute;
-    color: #FFFFFF;
-    font-size: 39px;
-    font-weight: 400;
-    line-height: 46px;
-    letter-spacing: 0em;
-    text-align: center;
 }
-.opened-quizz .content {
-    width: 759px;
-    height: 676px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 42px;
 
-    padding: 25px 35px;
+.opened-quizz .content {
+    width: 760px;
+    margin-bottom: 50px;
+
+    padding: 30px 35px;
     background: #FFFFFF;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
 }
+
 .opened-quizz .content .title {
     width: 100%;
     height: 138px;
     margin-bottom: 20px;
-    background-color: blue;
     
     color: #FFFFFF;
     font-size: 23px;
     font-weight: 700;
     line-height: 27px;
-    text-align: center;
 
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 .answers {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 }
-.option {
-    margin-bottom: 18px;
-}
+
 .option img {
     width: 330px;
     height: 175px;
     margin-bottom: 10px;
+
+    cursor: pointer;
 }
+
 .option p {   
     font-size: 20px;
     font-weight: 700;
     line-height: 23px;
-    letter-spacing: 0em;
     color: #000000;
+
+    margin-bottom: 18px;
 }
 
 .creating-quizz {
@@ -341,14 +345,14 @@ input {
     color: #bababa;
 }
 
-.creating-quizz .btn-next {
+.btn {
     box-sizing: content-box;
 
     height: 54px;
 
     border-radius: 15px;
     padding: 0 50px;
-    margin-top: 85px;
+    margin-top: 50px;
 
     background-color: #ec362d;
 
@@ -358,19 +362,23 @@ input {
     text-align: center;
     color: white;
 }
+
 .output {
-    width: 759px;
-    height: 430px;
+    width: 760px;
     padding: 20px;
     margin: 0 auto;
 
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
     background-color: #FFFFFF;
     margin-bottom: 50px;
+
+    display: flex;
+    flex-direction: column;
 }
+
 .output .title {
     width: 100%;
-    height: 99px;
+    height: 100px;
     margin-bottom: 20px;
 
     display: flex;
@@ -382,62 +390,52 @@ input {
     font-size: 23px;
     font-weight: 700;
     line-height: 27px;
-    letter-spacing: 0em;
-    text-align: center;
 }
+
 .output .info {
     width: 100%;
     height: 100%;
 
     display: flex;
 }
+
 .output .info img {
     margin-right: 20px;
     width: 364px;
     height: 273px;
 }
+
 .output .info .text {
-    color:  #484848;
     font-size: 19px;
     font-weight: 700;
     line-height: 25px;
-    letter-spacing: 0em;
-    text-align: left;
+    color:  #484848;
 }
-.buttons {
-    font-size: 21px;
-    font-weight: 400;
-    line-height: 25px;
-    letter-spacing: 0em;
-    text-align: center;
-    margin: 0 auto;
-}
-.btn-restart {
-    width: 260px;
-    height: 52px;
-    margin-bottom: 16px;
 
-    border: none;
-    border-radius: 15px;
-
-    background-color:  #EC362D;
-    color:  #FFF5F4;
-}
 .btn-comeback {
     width: 260px;
     height: 52px;
+
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 25px;
+    text-align: center;
     color: #818181;
+
+    margin-bottom: 50px;
 }
 
 .answers .not-selected {
     opacity: 0.3;
 }
 
-.not-selected #true, .selected #true{
+.not-selected #true,
+.selected #true{
     color: #009C22;
 }
 
-.not-selected #false, .selected #false{
+.not-selected #false,
+.selected #false{
     color: #FF4B4B;
 }
 
@@ -449,10 +447,10 @@ input {
     margin-bottom: -20px;
 }
 
-.show {
+/* .show {
     opacity: 1;
     z-index: 1;
-}
+} */
 
 .hide {
     display: none;

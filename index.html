@@ -27,11 +27,11 @@
 <body>
     <header onclick="window.location.reload()" style="cursor: pointer;">BuzzQuizz</header>
     <main class="main">
-        <div class="selected-quizz hide">
+        <div class="selected-quizz">
             <h1>Você não criou nenhum quizz ainda :(</h1>
             <button class="btn-create-quizz" onclick="createQuizz()">Criar Quizz</button>
         </div>
-        <div class="your-quizz">
+        <div class="your-quizz hide">
             <div>
                 <h1>Seus Quizzes</h1>
                 <button class="btn-plus" onclick="createQuizz()">+</button>
@@ -56,7 +56,7 @@
             </div>
         </div>
         </div>
-        <div class="all-quizz show">
+        <div class="all-quizz">
             <h1>Todos os Quizzes</h1>
             <div class="thumbnails">
 
@@ -64,7 +64,7 @@
         </div>
     </main>
     <div class="opened-quizz hide">
-        
+
     </div>
     <div class="creating-quizz">
         <div class="screen-one hide">
@@ -75,7 +75,7 @@
                 <input type="text" placeholder="Quantidade de perguntas do quizz">
                 <input type="text" placeholder="Quantidade de níveis do quizz">
             </div>
-            <button class="btn-next" onclick="createAnswers()">Prosseguir para criar perguntas</button>
+            <button class="btn" onclick="createAnswers()">Prosseguir para criar perguntas</button>
         </div>
         <div class="screen-two hide">
             <h1>Crie suas perguntas</h1>
@@ -144,7 +144,7 @@
                 <input type="text" placeholder="Resposta incorreta 3">
                 <input type="text" placeholder="URL da imagem 3">
             </div>
-            <button class="btn-next" onclick="createLevel()">Prosseguir para criar níveis</button>
+            <button class="btn" onclick="createLevel()">Prosseguir para criar níveis</button>
         </div>
         <div class="screen-three hide">
             <h1>Agora, decida os níveis</h1>
@@ -181,20 +181,20 @@
                 <input type="text" placeholder="URL da imagem do nível">
                 <input type="text" placeholder="Descrição do nível">
             </div>
-            <button class="btn-next" onclick="finishQuizz()">Finalizar Quizz</button>
+            <button class="btn" onclick="finishQuizz()">Finalizar Quizz</button>
         </div>
-        <div class="screen-four">
+        <div class="screen-four hide">
             <h1>Seu quizz está pronto!</h1>
             <div class="thumbnail quizz-done">
                 <img src="./assets/teste.jpg">
                 <h2>Texto Texto Texto</h2>
             </div>
-            <button class="btn-next" onclick="goToQuizz()">Finalizar Quizz</button>
+            <button class="btn" onclick="goToQuizz()">Finalizar Quizz</button>
             <button class="btn-comeback" onclick="comeback()">Voltar pra home</button>
         </div>
     </div>
 
-    
+
 
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
