@@ -413,6 +413,8 @@ function finishQuizz() {
         screenThree.classList.add('hide')
         screenFour.classList.remove('hide')
     }
+
+    axios.post('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes', newQuestions)
 }
 
 function goToQuizz() {
