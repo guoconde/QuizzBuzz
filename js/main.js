@@ -226,6 +226,17 @@ function createQuizz() {
     main.classList.add('hide')
     screenOne.classList.remove('hide')
 }
+function isValidHttpUrl(string) {
+    let url;
+
+    try {
+        url = new URL(string);
+    } catch (_) {
+        return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
+}
 
 function createAnswers() {
     newQuestions.title = document.querySelector('.screen-one .form input:first-child').value
@@ -235,11 +246,11 @@ function createAnswers() {
 
     screenTwo.innerHTML = `
         <h1>Crie suas perguntas</h1>
-        <div class="minimized hide">
+        <div class="minimized" onclick ="openForm(this)">
             <h1>Pergunta 1</h1>
-            <ion-icon name="create-outline"></ion-icon>
+            <ion-icon name="create-outline" ></ion-icon>
         </div>
-        <div class="form">
+        <div class="form hide">
             <h1>Pergunta 1</h1>
             <input class='mandatory' type="text" placeholder="Texto da pergunta">
             <input class='mandatory' type="text" placeholder="Cor de fundo da pergunta">
@@ -259,9 +270,10 @@ function createAnswers() {
             <input class='no-mandatory' type="text" placeholder="URL da imagem 3">
         </div>
     `
-
-    if (newQuestions.title === '' && newQuestions.image === '' && nQuestions === '' && nLevel === '') {
-        alert('Preencha Todos os Campos')
+    let isvalid = isValidHttpUrl(newQuestions.image)
+    
+    if (newQuestions.title.length < 20 || isvalid === false  || nQuestions < 3  || nLevel < 2 || newQuestions.title.length > 65) {
+        alert('Preencha Todos os Campos corretamente')
     } else {
         screenOne.classList.add('hide')
         screenTwo.classList.remove('hide')
@@ -269,7 +281,7 @@ function createAnswers() {
 
     for (let i = 2; i <= nQuestions; i++) {
         screenTwo.innerHTML +=
-            `<div class="minimized">
+            `<div class="minimized" onclick = "openForm(this)">
                 <h1>Pergunta ${i}</h1>
                 <ion-icon name="create-outline"></ion-icon>
             </div>
@@ -421,4 +433,17 @@ function goToQuizz() {
 
 function getError(er) {
     console.log(er)
+}
+function openForm(item) {
+    const nextElement = item.nextElementSibling;
+    const previousElement = item.previousElementSibling;
+
+    if (previousElement !== null){
+        if (!previousElement.classList.contains("hide")){
+            previousElement.classList.add("hide")
+        }
+    }
+
+    nextElement.classList.toggle("hide")
+
 }
