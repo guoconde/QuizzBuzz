@@ -17,7 +17,6 @@ let nQuestions = ''
 let nLevel = ''
 
 let newQuestions = {
-    id: '',
     title: '',
     image: '',
     questions: [],
@@ -118,7 +117,6 @@ function renderQuiz(response) {
 }
 
 function pickOption(element, isCorrect) {
-    // const content = document.querySelectorAll('.opened-quizz .content')
 
     setTimeout(() => {
         const content = document.querySelectorAll('.opened-quizz .content')
@@ -275,7 +273,7 @@ function createAnswers() {
                 <h1>Pergunta ${i}</h1>
                 <ion-icon name="create-outline"></ion-icon>
             </div>
-            <div class="form hide">
+            <div class="form">
                 <h1>Pergunta ${i}</h1>
                 <input class='mandatory' type="text" placeholder="Texto da pergunta">
                 <input class='mandatory' type="text" placeholder="Cor de fundo da pergunta">
@@ -306,31 +304,31 @@ function createLevel() {
 
     for (let i = 0; i < nQuestions; i++) {
         newQuestions.questions[i] = {
-            title: inputValue[0].value,
-            color: inputValue[1].value,
+            title: inputValue[0 + (i * 10)].value,
+            color: inputValue[1 + (i * 10)].value,
             answers: [],
         }
         newQuestions.questions[i].answers[0] = {
-            text: inputValue[2].value,
-            image: inputValue[3].value,
+            text: inputValue[2 + (i * 10)].value,
+            image: inputValue[3 + (i * 10)].value,
             isCorrectAnswer: true,
         }
         newQuestions.questions[i].answers[1] = {
-            text: inputValue[4].value,
-            image: inputValue[5].value,
+            text: inputValue[4 + (i * 10)].value,
+            image: inputValue[5 + (i * 10)].value,
             isCorrectAnswer: false,
         }
-        if (inputValue[6].value !== '') {
+        if (inputValue[6 + (i * 10)].value !== '' && inputValue[7 + (i * 10)].value !== '') {
             newQuestions.questions[i].answers[2] = {
-                text: inputValue[6].value,
-                image: inputValue[7].value,
+                text: inputValue[6 + (i * 10)].value,
+                image: inputValue[7 + (i * 10)].value,
                 isCorrectAnswer: false,
             }
         }
-        if (inputValue[8].value !== '')
+        if (inputValue[8 + (i * 10)].value !== '' && inputValue[9 + (i * 10)].value !== '')
             newQuestions.questions[i].answers[3] = {
-                text: inputValue[8].value,
-                image: inputValue[9].value,
+                text: inputValue[8 + (i * 10)].value,
+                image: inputValue[9 + (i * 10)].value,
                 isCorrectAnswer: false,
             }
     }
@@ -387,10 +385,10 @@ function finishQuizz() {
 
     for (let i = 0; i < nLevel; i++) {
         newQuestions.levels[i] = {
-            title: inputValue[0].value,
-            nimValue: inputValue[1].value,
-            image: inputValue[2].value,
-            text: inputValue[3].value,
+            title: inputValue[0 + (i * 4)].value,
+            image: inputValue[2 + (i * 4)].value,
+            text: inputValue[3 + (i * 4)].value,
+            minValue: inputValue[1 + (i * 4)].value,
         }
     }
 
