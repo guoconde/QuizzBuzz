@@ -48,10 +48,10 @@ function loadQuizzes(el) {
     myQuizzes = JSON.parse(myQuizzes);
 
     if (myQuizzes !== null) {
+        createdQuizzes = myQuizzes;
         document.querySelector(".selected-quizz").classList.add("hide");
         const yourQuizz = document.querySelector(".your-quizz");
         yourQuizz.classList.remove("hide");
-
     }
 
     const yourThumbnail = document.querySelector(".your-quizz .your-thumbnails");
@@ -59,7 +59,7 @@ function loadQuizzes(el) {
     getThumbnails.innerHTML = ''
 
     for (let i = 0; i < el.data.length; i++) {
-        let control = false
+        let control = false;
         if (myQuizzes !== null) {
             for (let j = 0; j < myQuizzes.length; j++) {
                 const element = myQuizzes[j];
@@ -93,7 +93,10 @@ function openQuizz(element) {
     }
 
     showQuizz.classList.remove('hide')
-
+    const screenFour = document.querySelector(".screen-four");
+    if (!screenFour.classList.contains("hide")){
+        screenFour.classList.add("hide")
+    }
     axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${element}`)
         .then(renderQuiz)
         .catch(getError)
@@ -475,7 +478,7 @@ function VerificationLevels() {
         let title = element.querySelector(".form .title").value;
         let minValue = parseInt(element.querySelector(".form .min-value").value);
         let urlImage = element.querySelector(".form .url-image").value;
-        let description = element.querySelector(".form .description0").value;
+        let description = element.querySelector(".form .description").value;
 
         let isValid = isValidHttpUrl(urlImage);
 
@@ -534,7 +537,7 @@ function finishQuizz() {
                 <img src="${response.data.image}">
                 <h2>${response.data.title}</h2>
             </div>
-            <button class="btn" onclick="renderQuiz(${response.data.id})">Acessar Quizz</button>
+            <button class="btn" onclick="openQuizz(${response.data.id})">Acessar Quizz</button>
             <button class="btn-comeback" onclick="comeback()">Voltar pra home</button>
         `
         storeMyQuizz(response.data.id)
