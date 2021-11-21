@@ -43,27 +43,27 @@ axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
     .then(loadQuizzes)
     .catch(getError)
 
-function loadQuizzes (el) {
+function loadQuizzes(el) {
     let myQuizzes = localStorage.getItem("myQuizzes")
     myQuizzes = JSON.parse(myQuizzes);
 
-    if (myQuizzes !== null){
+    if (myQuizzes !== null) {
         document.querySelector(".selected-quizz").classList.add("hide");
         const yourQuizz = document.querySelector(".your-quizz");
         yourQuizz.classList.remove("hide");
-        
+
     }
-    
+
     const yourThumbnail = document.querySelector(".your-quizz .your-thumbnails");
     yourThumbnail.innerHTML = ""
     getThumbnails.innerHTML = ''
 
     for (let i = 0; i < el.data.length; i++) {
         let control = false
-        if (myQuizzes !== null){
+        if (myQuizzes !== null) {
             for (let j = 0; j < myQuizzes.length; j++) {
                 const element = myQuizzes[j];
-                if (el.data[i].id === element){
+                if (el.data[i].id === element) {
                     yourThumbnail.innerHTML += `
                     <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
                         <img src="${el.data[i].image}">
@@ -73,7 +73,7 @@ function loadQuizzes (el) {
                 }
             }
         }
-        if (control === true){
+        if (control === true) {
             continue;
         }
         getThumbnails.innerHTML += `
@@ -296,8 +296,11 @@ function verificationInfo() {
     const isValid = isValidHttpUrl(quizzImage);
 
     if (quizzTitle.length < 20 || quizzTitle.length > 65 || isValid === false || nQuestions < 3 || nLevel < 2) {
-        alert("Por favor, confira a validade dos dados!")
-
+        alert(`Os dados inseridos devem seguir este padrão:
+Título deve conter mais de 20 e menos de 65 caracteres.
+A URL das imagens devem serguir o padrão: http://...
+A quantidade de perguntas devem ser no mínimo 3.
+A quantidade de níveis devem ser no mínimo 2`)
         return;
     }
 
@@ -343,6 +346,7 @@ function createAnswers() {
 }
 function verificationQuestions() {
     const item = document.querySelectorAll('.screen-two .form-Field');
+    const regex = /^#(?:[0-9a-fA-F]{3}){1,2}$/
 
     for (let i = 0; i < item.length; i++) {
         let currentItem = item[i];
@@ -357,12 +361,20 @@ function verificationQuestions() {
         let isValidca = isValidHttpUrl(inputImageCa);
         let isvalidwa = isValidHttpUrl(inputImageWa);
 
-        if (inputTitle.length < 20 || inputCorrectAnswer.length < 20 || inputWrongAnswer.length < 20) {
-            alert("Verifique os dados digitados !")
+        if (inputTitle.length < 20 || inputCorrectAnswer.length < 20 || inputWrongAnswer.length < 20 || !regex.test(inputColor)) {
+            alert(`Os dados inseridos devem seguir este padrão:
+Título deve conter mais de 20 caracteres.
+As respostas devem conter mais de 20 caracteres.
+A URL das imagens devem serguir o padrão: http://...
+A cor de fundo deve seguir o padrão Hexadecimal, conforme o modelo: #FFFFFF`)
             return;
         }
         if (isValidca === false || isvalidwa === false) {
-            alert("Verifique os dados digitados!")
+            alert(`Os dados inseridos devem seguir este padrão:
+Título deve conter mais de 20 caracteres.
+As respostas devem conter mais de 20 caracteres.
+A URL das imagens devem serguir o padrão: http://...
+A cor de fundo deve seguir o padrão Hexadecimal, conforme o modelo: #FFFFFF`)
             return;
         }
 
@@ -428,6 +440,7 @@ function verificationQuestions() {
     createLevel()
     screenTwo.innerHTML = ""
 }
+
 function createLevel() {
     window.scroll(0, 0)
     screenTwo.classList.add('hide')
@@ -451,10 +464,9 @@ function createLevel() {
         `
     }
 
-
     screenThree.innerHTML += `<button class="btn" onclick="VerificationLevels()">Finalizar Quizz</button>`
-
 }
+
 function VerificationLevels() {
     const item = document.querySelectorAll('.screen-three .form-Field');
     const minValueLevels = []
@@ -468,11 +480,19 @@ function VerificationLevels() {
         let isValid = isValidHttpUrl(urlImage);
 
         if (title.length < 10 || isValid === false || description.length < 30) {
-            alert("Por favor, insira valores válidos!")
+            alert(`Os dados inseridos devem seguir este padrão:
+Título deve conter mais de 10 caracteres.
+A % de acerto mínima deve estar entre 0 e 100.
+A URL da imagen devem serguir o padrão: http://...
+A descrição do nível deve ser maior do que 30 caracteres.`)
             return;
         }
         if (minValue === NaN || minValue > 100 || minValue < 0) {
-            alert("Por favor, insira valores válidos!")
+            alert(`Os dados inseridos devem seguir este padrão:
+Título deve conter mais de 10 caracteres.
+A % de acerto mínima deve estar entre 0 e 100.
+A URL da imagen devem serguir o padrão: http://...
+A descrição do nível deve ser maior do que 30 caracteres.`)
             return;
         }
         minValueLevels.push(minValue);
