@@ -6,6 +6,7 @@ let levels = [];
 let scrollTo = 0;
 let responseObject;
 let data;
+let createdQuizzes = [];
 
 const main = document.querySelector('.main')
 const screenOne = document.querySelector('.screen-one')
@@ -22,22 +23,67 @@ let newQuestions = {
     questions: [],
     levels: []
 }
-
+let questionsInfo = {
+    title: "",
+    color: "",
+    answers: []
+}
+let answersInfo = {
+    text: "",
+    image: "",
+    isCorrectAnswer: ""
+}
+let levelsInfo = {
+    title: "",
+    image: "",
+    text: "",
+    minValue: ""
+}
 axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
-    .then(el => {
-        getThumbnails.innerHTML = ''
+    .then(loadQuizzes)
+    .catch(getError)
 
-        for (let i = 0; i < el.data.length; i++) {
-            getThumbnails.innerHTML += `
+function loadQuizzes (el) {
+    let myQuizzes = localStorage.getItem("myQuizzes")
+    myQuizzes = JSON.parse(myQuizzes);
+
+    if (myQuizzes !== null){
+        document.querySelector(".selected-quizz").classList.add("hide");
+        const yourQuizz = document.querySelector(".your-quizz");
+        yourQuizz.classList.remove("hide");
+        
+    }
+    
+    const yourThumbnail = document.querySelector(".your-quizz .your-thumbnails");
+    yourThumbnail.innerHTML = ""
+    getThumbnails.innerHTML = ''
+
+    for (let i = 0; i < el.data.length; i++) {
+        let control = false
+        if (myQuizzes !== null){
+            for (let j = 0; j < myQuizzes.length; j++) {
+                const element = myQuizzes[j];
+                if (el.data[i].id === element){
+                    yourThumbnail.innerHTML += `
+                    <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
+                        <img src="${el.data[i].image}">
+                        <h2>${el.data[i].title}</h2>
+                    </div>`
+                    control = true;
+                }
+            }
+        }
+        if (control === true){
+            continue;
+        }
+        getThumbnails.innerHTML += `
                 <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
                     <img src="${el.data[i].image}">
                     <h2>${el.data[i].title}</h2>
                 </div>
             `
-        }
-    })
-    .catch(getError)
-
+    }
+}
 function openQuizz(element) {
     const hideMain = document.querySelector('.main')
     const showQuizz = document.querySelector('.opened-quizz')
@@ -117,6 +163,7 @@ function renderQuiz(response) {
 }
 
 function pickOption(element, isCorrect) {
+    // const content = document.querySelectorAll('.opened-quizz .content')
 
     setTimeout(() => {
         const content = document.querySelectorAll('.opened-quizz .content')
@@ -219,13 +266,12 @@ function comeback() {
     newQuestions.image = ''
     newQuestions.questions = []
     newQuestions.levels = []
+
+    window.scroll(0, 0)
+    const promise = axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
+    promise.then(loadQuizzes)
 }
 
-
-function createQuizz() {
-    main.classList.add('hide')
-    screenOne.classList.remove('hide')
-}
 function isValidHttpUrl(string) {
     let url;
 
@@ -237,200 +283,252 @@ function isValidHttpUrl(string) {
 
     return url.protocol === "http:" || url.protocol === "https:";
 }
-
-function createAnswers() {
-    newQuestions.title = document.querySelector('.screen-one .form input:first-child').value
-    newQuestions.image = document.querySelector('.screen-one .form input:nth-child(2)').value
+function createQuizz() {
+    main.classList.add('hide')
+    screenOne.classList.remove('hide')
+}
+function verificationInfo() {
+    let quizzTitle = document.querySelector('.screen-one .form input:first-child').value
+    let quizzImage = document.querySelector('.screen-one .form input:nth-child(2)').value
     nQuestions = document.querySelector('.screen-one .form input:nth-child(3)').value
     nLevel = document.querySelector('.screen-one .form input:nth-child(4)').value
 
-    screenTwo.innerHTML = `
-        <h1>Crie suas perguntas</h1>
-        <div class="minimized" onclick ="openForm(this)">
-            <h1>Pergunta 1</h1>
-            <ion-icon name="create-outline" ></ion-icon>
-        </div>
-        <div class="form hide">
-            <h1>Pergunta 1</h1>
-            <input class='mandatory' type="text" placeholder="Texto da pergunta">
-            <input class='mandatory' type="text" placeholder="Cor de fundo da pergunta">
-            <br>
-            <h1>Resposta correta</h1>
-            <input class='mandatory' type="text" placeholder="Resposta correta">
-            <input class='mandatory' type="text" placeholder="URL da imagem">
-            <br>
-            <h1>Respostas incorretas</h1>
-            <input class='mandatory't' type="text" placeholder="Resposta incorreta 1">
-            <input class='mandatory't' type="text" placeholder="URL da imagem 1">
-            <br>
-            <input class='no-mandatory' type="text" placeholder="Resposta incorreta 2">
-            <input class='no-mandatory' type="text" placeholder="URL da imagem 2">
-            <br>
-            <input class='no-mandatory' type="text" placeholder="Resposta incorreta 3">
-            <input class='no-mandatory' type="text" placeholder="URL da imagem 3">
-        </div>
-    `
-    let isvalid = isValidHttpUrl(newQuestions.image)
-    
-    if (newQuestions.title.length < 20 || isvalid === false  || nQuestions < 3  || nLevel < 2 || newQuestions.title.length > 65) {
-        alert('Preencha Todos os Campos corretamente')
-    } else {
-        screenOne.classList.add('hide')
-        screenTwo.classList.remove('hide')
+    const isValid = isValidHttpUrl(quizzImage);
+
+    if (quizzTitle.length < 20 || quizzTitle.length > 65 || isValid === false || nQuestions < 3 || nLevel < 2) {
+        alert("Por favor, confira a validade dos dados!")
+
+        return;
     }
 
-    for (let i = 2; i <= nQuestions; i++) {
+    newQuestions.title = quizzTitle;
+    newQuestions.image = quizzImage;
+    createAnswers()
+}
+function createAnswers() {
+    screenOne.classList.add('hide')
+    screenTwo.classList.remove('hide')
+
+    for (let i = 1; i <= nQuestions; i++) {
         screenTwo.innerHTML +=
-            `<div class="minimized" onclick = "openForm(this)">
+            `
+            <div class="minimized" onclick ="openForm(this)">
                 <h1>Pergunta ${i}</h1>
-                <ion-icon name="create-outline"></ion-icon>
+                <ion-icon name="create-outline" ></ion-icon>
             </div>
-            <div class="form">
-                <h1>Pergunta ${i}</h1>
-                <input class='mandatory' type="text" placeholder="Texto da pergunta">
-                <input class='mandatory' type="text" placeholder="Cor de fundo da pergunta">
-                <br>
-                <h1>Resposta correta</h1>
-                <input class='mandatory' type="text" placeholder="Resposta correta">
-                <input class='mandatory' type="text" placeholder="URL da imagem">
-                <br>
-                <h1>Respostas incorretas</h1>
-                <input class='mandatory' type="text" placeholder="Resposta incorreta 1">
-                <input class='mandatory' type="text" placeholder="URL da imagem 1">
-                <br>
-                <input class='no-mandatory' type="text" placeholder="Resposta incorreta 2">
-                <input class='no-mandatory' type="text" placeholder="URL da imagem 2">
-                <br>
-                <input class='no-mandatory' type="text" placeholder="Resposta incorreta 3">
-                <input class='no-mandatory' type="text" placeholder="URL da imagem 3">
+            <div class="form-Field hide">
+                <div class="form">
+                    <h1>Pergunta ${i}</h1>
+                    <input class='mandatory title' type="text" placeholder="Texto da pergunta">
+                    <input class='mandatory color' type="text" placeholder="Cor de fundo da pergunta">
+                    <br>
+                    <h1>Resposta correta</h1>
+                    <input class='mandatory correct-answer ' type="text" placeholder="Resposta correta">
+                    <input class='mandatory url-correct-answer' type="text" placeholder="URL da imagem">
+                    <br>
+                    <h1>Respostas incorretas</h1>
+                    <input class='mandatory wrong-answer' type="text" placeholder="Resposta incorreta 1">
+                    <input class='mandatory url-wrong-answer' type="text" placeholder="URL da imagem 1">
+                    <br>
+                    <input class='no-mandatory wrong-answer' type="text" placeholder="Resposta incorreta 2">
+                    <input class='no-mandatory url-wrong-answer' type="text" placeholder="URL da imagem 2">
+                    <br>
+                    <input class='no-mandatory wrong-answer' type="text" placeholder="Resposta incorreta 3">
+                    <input class='no-mandatory url-wrong-answer' type="text" placeholder="URL da imagem 3">
+                </div>
             </div>`
     }
 
-    screenTwo.innerHTML += `<button class="btn" onclick="createLevel()">Prosseguir para criar níveis</button>`
+    screenTwo.innerHTML += `<button class="btn" onclick="verificationQuestions ()">Prosseguir para criar níveis</button>`
 }
+function verificationQuestions() {
+    const item = document.querySelectorAll('.screen-two .form-Field');
 
-function createLevel() {
-    const ifNotValue = []
-    const inputValueMandatory = document.querySelectorAll('.screen-two .form input.mandatory')
-    const inputValue = document.querySelectorAll('.screen-two .form input')
+    for (let i = 0; i < item.length; i++) {
+        let currentItem = item[i];
 
-    for (let i = 0; i < nQuestions; i++) {
-        newQuestions.questions[i] = {
-            title: inputValue[0 + (i * 10)].value,
-            color: inputValue[1 + (i * 10)].value,
-            answers: [],
+        let inputTitle = currentItem.querySelector(".form .mandatory.title").value;
+        let inputColor = currentItem.querySelector(".form .mandatory.color").value;
+        let inputCorrectAnswer = currentItem.querySelector(".form .mandatory.correct-answer").value;
+        let inputImageCa = currentItem.querySelector(".form .mandatory.url-correct-answer").value;
+        let inputWrongAnswer = currentItem.querySelector(".form .mandatory.wrong-answer").value;
+        let inputImageWa = currentItem.querySelector(".form .mandatory.url-wrong-answer").value;
+
+        let isValidca = isValidHttpUrl(inputImageCa);
+        let isvalidwa = isValidHttpUrl(inputImageWa);
+
+        if (inputTitle.length < 20 || inputCorrectAnswer.length < 20 || inputWrongAnswer.length < 20) {
+            alert("Verifique os dados digitados !")
+            return;
         }
-        newQuestions.questions[i].answers[0] = {
-            text: inputValue[2 + (i * 10)].value,
-            image: inputValue[3 + (i * 10)].value,
-            isCorrectAnswer: true,
+        if (isValidca === false || isvalidwa === false) {
+            alert("Verifique os dados digitados!")
+            return;
         }
-        newQuestions.questions[i].answers[1] = {
-            text: inputValue[4 + (i * 10)].value,
-            image: inputValue[5 + (i * 10)].value,
-            isCorrectAnswer: false,
+
+
+        questionsInfo.title = inputTitle;
+        questionsInfo.color = inputColor;
+
+        answersInfo.text = inputCorrectAnswer;
+        answersInfo.image = inputImageCa;
+        answersInfo.isCorrectAnswer = true;
+        questionsInfo.answers.push(answersInfo);
+
+        answersInfo = {
+            text: "",
+            image: "",
+            isCorrectAnswer: ""
         }
-        if (inputValue[6 + (i * 10)].value !== '' && inputValue[7 + (i * 10)].value !== '') {
-            newQuestions.questions[i].answers[2] = {
-                text: inputValue[6 + (i * 10)].value,
-                image: inputValue[7 + (i * 10)].value,
-                isCorrectAnswer: false,
+
+        answersInfo.text = inputWrongAnswer;
+        answersInfo.image = inputImageWa;
+        answersInfo.isCorrectAnswer = false;
+        questionsInfo.answers.push(answersInfo);
+
+        newQuestions.questions.push(questionsInfo);
+        answersInfo = {
+            text: "",
+            image: "",
+            isCorrectAnswer: ""
+        }
+
+        for (let j = 0; j < 2; j++) {
+            let noMandatoryAnswer = currentItem.querySelectorAll(".form .no-mandatory.wrong-answer");
+            let noMandatoryUrl = currentItem.querySelectorAll(".no-mandatory.url-wrong-answer");
+
+            let itemAnswer = noMandatoryAnswer[j].value;
+            let itemUrl = noMandatoryUrl[j].value;
+            if (itemAnswer !== "" || itemUrl !== "") {
+                let isvalidUrl = isValidHttpUrl(itemUrl);
+                if (itemAnswer.length < 20 || isvalidUrl === false) {
+                    alert("Verifique os dados digitados !")
+                    return;
+                }
+                answersInfo.isCorrectAnswer = false;
+                answersInfo.text = itemAnswer;
+                answersInfo.image = itemUrl;
+
+                questionsInfo.answers.push(answersInfo);
+
+                answersInfo = {
+                    text: "",
+                    image: "",
+                    isCorrectAnswer: ""
+                }
             }
         }
-        if (inputValue[8 + (i * 10)].value !== '' && inputValue[9 + (i * 10)].value !== '')
-            newQuestions.questions[i].answers[3] = {
-                text: inputValue[8 + (i * 10)].value,
-                image: inputValue[9 + (i * 10)].value,
-                isCorrectAnswer: false,
-            }
+
+        questionsInfo = {
+            title: "",
+            color: "",
+            answers: []
+        }
     }
+    createLevel()
+    screenTwo.innerHTML = ""
+}
+function createLevel() {
+    window.scroll(0, 0)
+    screenTwo.classList.add('hide')
+    screenThree.classList.remove('hide')
 
-    screenThree.innerHTML = `
-        <h1>Agora, decida os níveis</h1>
-        <div class="minimized hide">
-            <h1>Nível 1</h1>
-            <ion-icon name="create-outline"></ion-icon>
-        </div>
-        <div class="form">
-            <h1>Nível 1</h1>
-            <input type="text" placeholder="Título do nível">
-            <input type="text" placeholder="% de acerto mínima">
-            <input type="text" placeholder="URL da imagem do nível">
-            <input type="text" placeholder="Descrição do nível">
-        </div>
-    `
-
-    for (let i = 2; i <= nLevel; i++) {
+    for (let i = 1; i <= nLevel; i++) {
         screenThree.innerHTML += `
-            <div class="minimized">
+            <div class="minimized" onclick = "openForm(this)">
                 <h1>Nível ${i}</h1>
                 <ion-icon name="create-outline"></ion-icon>
             </div>
-            <div class="form hide">
-                <h1>Nível ${i}</h1>
-                <input type="text" placeholder="Título do nível">
-                <input type="text" placeholder="% de acerto mínima">
-                <input type="text" placeholder="URL da imagem do nível">
-                <input type="text" placeholder="Descrição do nível">
+            <div class = "form-Field hide">
+                <div class="form hide">
+                    <h1>Nível ${i}</h1>
+                    <input class= "title" type="text" placeholder="Título do nível">
+                    <input class = "min-value" type="text" placeholder="% de acerto mínima">
+                    <input class = "url-image" type="text" placeholder="URL da imagem do nível">
+                    <input class = "description" type="text" placeholder="Descrição do nível">
+                </div>
             </div>
         `
     }
 
-    screenThree.innerHTML += `<button class="btn" onclick="finishQuizz()">Finalizar Quizz</button>`
 
-    for (let i = 0; i < inputValueMandatory.length; i++) {
-        ifNotValue.push(inputValueMandatory[i].value)
-    }
-    if (ifNotValue.includes('')) {
-        alert('Preencha Todos os Campos')
-    } else {
-        screenTwo.classList.add('hide')
-        screenThree.classList.remove('hide')
-    }
+    screenThree.innerHTML += `<button class="btn" onclick="VerificationLevels()">Finalizar Quizz</button>`
 
-    window.scroll(0, 0)
 }
+function VerificationLevels() {
+    const item = document.querySelectorAll('.screen-three .form-Field');
+    const minValueLevels = []
+    for (let i = 0; i < item.length; i++) {
+        const element = item[i];
+        let title = element.querySelector(".form .title").value;
+        let minValue = parseInt(element.querySelector(".form .min-value").value);
+        let urlImage = element.querySelector(".form .url-image").value;
+        let description = element.querySelector(".form .description0").value;
 
-function finishQuizz() {
-    const ifNotValue = []
-    const inputValue = document.querySelectorAll('.screen-three .form input')
+        let isValid = isValidHttpUrl(urlImage);
 
-    for (let i = 0; i < nLevel; i++) {
-        newQuestions.levels[i] = {
-            title: inputValue[0 + (i * 4)].value,
-            image: inputValue[2 + (i * 4)].value,
-            text: inputValue[3 + (i * 4)].value,
-            minValue: inputValue[1 + (i * 4)].value,
+        if (title.length < 10 || isValid === false || description.length < 30) {
+            alert("Por favor, insira valores válidos!")
+            return;
+        }
+        if (minValue === NaN || minValue > 100 || minValue < 0) {
+            alert("Por favor, insira valores válidos!")
+            return;
+        }
+        minValueLevels.push(minValue);
+
+        levelsInfo.title = title;
+        levelsInfo.image = urlImage;
+        levelsInfo.text = description;
+        levelsInfo.minValue = minValue;
+        newQuestions.levels.push(levelsInfo);
+        levelsInfo = {
+            title: "",
+            image: "",
+            text: "",
+            minValue: ""
         }
     }
 
-    screenFour.innerHTML = `
-        <h1>Seu quizz está pronto!</h1>
-        <div class="thumbnail quizz-done">
-            <img src="./assets/teste.jpg">
-            <h2>Texto Texto Texto</h2>
-        </div>
-        <button class="btn" onclick="goToQuizz()">Acessar Quizz</button>
-        <button class="btn-comeback" onclick="comeback()">Voltar pra home</button>
-    `
-
-    for (let i = 0; i < inputValue.length; i++) {
-        ifNotValue.push(inputValue[i].value)
+    for (let i = 0; i < minValueLevels.length; i++) {
+        const element = minValueLevels[i];
+        if (element === 0) {
+            finishQuizz();
+            screenThree.innerHTML = ""
+            return;
+        }
     }
-    if (ifNotValue.includes('')) {
-        alert('Preencha Todos os Campos')
-    } else {
+    alert("Verifique os dados digitados!")
+}
+
+function finishQuizz() {
+    const promise = axios.post('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes', newQuestions)
+    promise.then((response) => {
+        console.log(response)
         screenThree.classList.add('hide')
         screenFour.classList.remove('hide')
-    }
 
-    axios.post('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes', newQuestions)
+        screenFour.innerHTML = `
+            <h1>Seu quizz está pronto!</h1>
+            <div class="thumbnail quizz-done">
+                <img src="${response.data.image}">
+                <h2>${response.data.title}</h2>
+            </div>
+            <button class="btn" onclick="renderQuiz(${response.data.id})">Acessar Quizz</button>
+            <button class="btn-comeback" onclick="comeback()">Voltar pra home</button>
+        `
+        storeMyQuizz(response.data.id)
+    })
+
+    promise.catch((er) => {
+        console.log(er)
+    });
 }
-
-function goToQuizz() {
-    console.log('proximo')
+function storeMyQuizz(id) {
+    createdQuizzes.push(id)
+    const createdQuizzesSerial = JSON.stringify(createdQuizzes)
+    localStorage.setItem("myQuizzes", createdQuizzesSerial);
 }
-
 function getError(er) {
     console.log(er)
 }
@@ -438,8 +536,8 @@ function openForm(item) {
     const nextElement = item.nextElementSibling;
     const previousElement = item.previousElementSibling;
 
-    if (previousElement !== null){
-        if (!previousElement.classList.contains("hide")){
+    if (previousElement !== null) {
+        if (!previousElement.classList.contains("hide")) {
             previousElement.classList.add("hide")
         }
     }

@@ -238,10 +238,14 @@ input {
     font-size: 23px;
     font-weight: 700;
     line-height: 27px;
+    word-break: break-all;
+    text-align: center;
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    padding: 20px;
 }
 
 .answers {
@@ -258,11 +262,14 @@ input {
     cursor: pointer;
 }
 
-.option p {   
+.option p {  
+    width: 330px;
     font-size: 20px;
     font-weight: 700;
     line-height: 23px;
     color: #000000;
+    word-break: break-all;
+    text-align: left;
 
     margin-bottom: 18px;
 }
@@ -410,6 +417,8 @@ input {
     font-weight: 700;
     line-height: 25px;
     color:  #484848;
+    word-break: break-word;
+    text-align: left;
 }
 
 .btn-comeback {
@@ -453,6 +462,6 @@ input {
 } */
 
 .hide,
-.form.hide {
+.form-Field.hide {
     display: none;
 }
