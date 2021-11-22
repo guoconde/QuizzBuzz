@@ -593,7 +593,6 @@ function VerificationLevels() {
         let title = element.querySelector(".form .title");
         let inputMinValue = element.querySelector(".form .min-value")
         let minValue = inputMinValue.value;
-        console.log(minValue)
         let urlImage = element.querySelector(".form .url-image")
         let description = element.querySelector(".form .description");
 
@@ -627,14 +626,15 @@ function VerificationLevels() {
 
     item.forEach((element) => {
         let title = element.querySelector(".form .title");
-        let minValue = parseInt(element.querySelector(".form .min-value").value);
+        let inputMinValue = element.querySelector(".form .min-value");
+        let minValue = parseInt(inputMinValue.value);
         let urlImage = element.querySelector(".form .url-image")
         let description = element.querySelector(".form .description");
         minValueLevels.push(minValue);
 
-        levelsInfo.title = title;
-        levelsInfo.image = urlImage;
-        levelsInfo.text = description;
+        levelsInfo.title = title.value;
+        levelsInfo.image = urlImage.value;
+        levelsInfo.text = description.value;
         levelsInfo.minValue = minValue;
         newQuestions.levels.push(levelsInfo);
         levelsInfo = {
