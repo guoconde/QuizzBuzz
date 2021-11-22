@@ -495,7 +495,7 @@ input {
 
 .confirmDelete {
     width: 400px;
-    height: 200px;
+    height: 250px;
 
     background-color: #fff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
@@ -504,8 +504,20 @@ input {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 10px;
+
+    margin: 20px auto;
+
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 23px;
 }
 
 .confirmDelete .btn {
-    width: 60%;
+    width: 50%;
+    margin: 0;
+}
+
+.confirmDelete p {
+    margin-bottom: 20px;
 }

@@ -712,16 +712,24 @@ function deleteQuizz(ev) {
             const deleteQuizzesSerial = JSON.stringify(createdQuizzes)
             localStorage.setItem("myQuizzes", deleteQuizzesSerial);
             console.log('antes da funcao')
+
+
+
         })
 
-    teste()
-    console.log('depois da funcao')
+
 }
 
 function teste() {
 
-    console.log('entrou no if')
-    localStorage.removeItem("myQuizzes")
-    document.querySelector(".selected-quizz").classList.remove("hide");
-    document.querySelector(".your-quizz").classList.add("hide");
+    console.log(createdQuizzes)
+
+    if (createdQuizzes.length <= 0) {
+        // console.log('entrou no if')
+        // localStorage.removeItem("myQuizzes")
+        // document.querySelector(".selected-quizz").classList.remove("hide");
+        // document.querySelector(".your-quizz").classList.add("hide");
+
+
+    }
 }
