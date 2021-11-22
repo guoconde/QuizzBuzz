@@ -312,31 +312,64 @@ function createQuizz() {
     screenOne.classList.remove('hide')
 }
 function verificationInfo() {
-    let quizzTitle = document.querySelector('.screen-one .form input:first-child').value
-    let quizzImage = document.querySelector('.screen-one .form input:nth-child(2)').value
-    nQuestions = document.querySelector('.screen-one .form input:nth-child(3)').value
-    nLevel = document.querySelector('.screen-one .form input:nth-child(4)').value
+    let quizzTitle = document.querySelector('.screen-one .form input:first-child')
+    let quizzImage = document.querySelector('.screen-one .form input:nth-child(3)')
+    nQuestions = document.querySelector('.screen-one .form input:nth-child(5)')
+    nLevel = document.querySelector('.screen-one .form input:nth-child(7)')
 
-    const isValid = isValidHttpUrl(quizzImage);
+    quizzTitle.setAttribute("style", "background-color:#FFFFFF;")
+    quizzImage.setAttribute("style", "background-color:#FFFFFF;")
+    nQuestions.setAttribute("style", "background-color:#FFFFFF;")
+    nLevel.setAttribute("style", "background-color:#FFFFFF;")
 
-    if (quizzTitle.length < 20 || quizzTitle.length > 65 || isValid === false || nQuestions < 3 || nLevel < 2) {
-        alert(`Os dados inseridos devem seguir este padrão:
-Título deve conter mais de 20 e menos de 65 caracteres.
-A URL das imagens devem serguir o padrão: http://...
-A quantidade de perguntas devem ser no mínimo 3.
-A quantidade de níveis devem ser no mínimo 2`)
-        return;
+
+    const errorTitle = document.querySelector(".screen-one .form .error.title")
+    const errorUrl = document.querySelector(".screen-one .form .error.image")
+    const errorNLevels = document.querySelector(".screen-one .form .error.nlevels")
+    const errorNQuestions = document.querySelector(".screen-one .form .error.nquestions")
+
+    errorTitle.innerHTML = ""
+    errorUrl.innerHTML = ""
+    errorNLevels.innerHTML = ""
+    errorNQuestions.innerHTML = ""
+
+    const isValid = isValidHttpUrl(quizzImage.value);
+    let control = true;
+
+    if (quizzTitle.value.length < 20 || quizzTitle.value.length > 65) {
+        errorTitle.innerHTML = "O título deve ter entre 20 e 65 caracteres";
+        quizzTitle.setAttribute("style", "background-color:#FFE9E9;")
+        control = false
+    }
+    if (isValid === false) {
+        errorUrl.innerHTML = "A URL não é válida";
+        quizzImage.setAttribute("style", "background-color:#FFE9E9;")
+        control = false
+    }
+    if (nQuestions.value < 3) {
+        errorNQuestions.innerHTML = "O quizz deve ter pelo menos 3 perguntas";
+        nQuestions.setAttribute("style", "background-color:#FFE9E9;")
+        control = false
+    }
+    if (nLevel.value < 2) {
+        errorNLevels.innerHTML = "O quizz deve ter pelo menos 2 níveis";
+        nLevel.setAttribute("style", "background-color:#FFE9E9;")
+        control = false
+    }
+    if (control === true) {
+        newQuestions.title = quizzTitle.value;
+        newQuestions.image = quizzImage.value;
+        createAnswers()
     }
 
-    newQuestions.title = quizzTitle;
-    newQuestions.image = quizzImage;
-    createAnswers()
+    return;
 }
 function createAnswers() {
     screenOne.classList.add('hide')
     screenTwo.classList.remove('hide')
 
-    for (let i = 1; i <= nQuestions; i++) {
+
+    for (let i = 1; i <= nQuestions.value; i++) {
         screenTwo.innerHTML +=
             `
             <div class="minimized" onclick ="openForm(this)">
@@ -347,21 +380,31 @@ function createAnswers() {
                 <div class="form">
                     <h1>Pergunta ${i}</h1>
                     <input class='mandatory title' type="text" placeholder="Texto da pergunta">
+                    <p class = 'error title'> </p>
                     <input class='mandatory color' type="text" placeholder="Cor de fundo da pergunta">
+                    <p class = 'error color'> </p>
                     <br>
                     <h1>Resposta correta</h1>
                     <input class='mandatory correct-answer ' type="text" placeholder="Resposta correta">
+                    <p class = 'error correct-answer'> </p>
                     <input class='mandatory url-correct-answer' type="text" placeholder="URL da imagem">
+                    <p class = 'error image-correct'> </p>
                     <br>
                     <h1>Respostas incorretas</h1>
                     <input class='mandatory wrong-answer' type="text" placeholder="Resposta incorreta 1">
+                    <p class = 'error wrong-answer'> </p>
                     <input class='mandatory url-wrong-answer' type="text" placeholder="URL da imagem 1">
+                    <p class = 'error image-wrong'> </p>
                     <br>
                     <input class='no-mandatory wrong-answer' type="text" placeholder="Resposta incorreta 2">
+                    <p class = 'error wrong-answer'> </p>
                     <input class='no-mandatory url-wrong-answer' type="text" placeholder="URL da imagem 2">
+                    <p class = 'error image-wrong'> </p>
                     <br>
                     <input class='no-mandatory wrong-answer' type="text" placeholder="Resposta incorreta 3">
+                    <p class = 'error wrong-answer'> </p>
                     <input class='no-mandatory url-wrong-answer' type="text" placeholder="URL da imagem 3">
+                    <p class = 'error image-wrong'> </p>
                 </div>
             </div>`
     }
@@ -372,42 +415,90 @@ function verificationQuestions() {
     const item = document.querySelectorAll('.screen-two .form-Field');
     const regex = /^#(?:[0-9a-fA-F]{3}){1,2}$/
 
+    const allInputs = document.querySelectorAll(".screen-two input")
+    allInputs.forEach((item) => {
+        item.setAttribute("style", "background-color:#FFFFF;")
+        item.nextElementSibling.innerHTML = ""
+    })
+    let control = true;
     for (let i = 0; i < item.length; i++) {
         let currentItem = item[i];
 
-        let inputTitle = currentItem.querySelector(".form .mandatory.title").value;
-        let inputColor = currentItem.querySelector(".form .mandatory.color").value;
-        let inputCorrectAnswer = currentItem.querySelector(".form .mandatory.correct-answer").value;
-        let inputImageCa = currentItem.querySelector(".form .mandatory.url-correct-answer").value;
-        let inputWrongAnswer = currentItem.querySelector(".form .mandatory.wrong-answer").value;
-        let inputImageWa = currentItem.querySelector(".form .mandatory.url-wrong-answer").value;
+        let inputTitle = currentItem.querySelector(".form .mandatory.title");
+        let inputColor = currentItem.querySelector(".form .mandatory.color");
+        let inputCorrectAnswer = currentItem.querySelector(".form .mandatory.correct-answer");
+        let inputImageCa = currentItem.querySelector(".form .mandatory.url-correct-answer");
+        let inputWrongAnswer = currentItem.querySelector(".form .mandatory.wrong-answer");
+        let inputImageWa = currentItem.querySelector(".form .mandatory.url-wrong-answer");
 
-        let isValidca = isValidHttpUrl(inputImageCa);
-        let isvalidwa = isValidHttpUrl(inputImageWa);
+        let isValidca = isValidHttpUrl(inputImageCa.value);
+        let isvalidwa = isValidHttpUrl(inputImageWa.value);
 
-        if (inputTitle.length < 20 || inputCorrectAnswer.length < 20 || inputWrongAnswer.length < 20 || !regex.test(inputColor)) {
-            alert(`Os dados inseridos devem seguir este padrão:
-Título deve conter mais de 20 caracteres.
-As respostas devem conter mais de 20 caracteres.
-A URL das imagens devem serguir o padrão: http://...
-A cor de fundo deve seguir o padrão Hexadecimal, conforme o modelo: #FFFFFF`)
-            return;
+        if (inputTitle.value.length < 20) {
+            inputTitle.nextElementSibling.innerHTML = "O título deve ter no mínimo 20 caracteres"
+            inputTitle.setAttribute("style", "background-color:#FFE9E9;")
+            control = false;
         }
-        if (isValidca === false || isvalidwa === false) {
-            alert(`Os dados inseridos devem seguir este padrão:
-Título deve conter mais de 20 caracteres.
-As respostas devem conter mais de 20 caracteres.
-A URL das imagens devem serguir o padrão: http://...
-A cor de fundo deve seguir o padrão Hexadecimal, conforme o modelo: #FFFFFF`)
-            return;
+        if (inputCorrectAnswer.value === "") {
+            inputCorrectAnswer.nextElementSibling.innerHTML = 'A resposta não pode estar vazia.'
+            inputCorrectAnswer.setAttribute("style", "background-color:#FFE9E9;")
+            control = false;
         }
+        if (inputWrongAnswer.value === "") {
+            inputWrongAnswer.nextElementSibling.innerHTML = 'A resposta não pode estar vazia.'
+            inputWrongAnswer.setAttribute("style", "background-color:#FFE9E9;")
+            control = false;
+        }
+        if (!regex.test(inputColor.value)) {
+            inputColor.nextElementSibling.innerHTML = "A cor deve ter formato hexadecimal #000000"
+            inputColor.setAttribute("style", "background-color:#FFE9E9;")
+            control = false;
+        }
+        if (isValidca === false) {
+            inputImageCa.nextElementSibling.innerHTML = "A URL não é válida"
+            inputImageCa.setAttribute("style", "background-color:#FFE9E9;")
+            control = false;
+        }
+        if (isvalidwa === false) {
+            inputImageWa.nextElementSibling.innerHTML = "A URL não é válida"
+            inputImageWa.setAttribute("style", "background-color:#FFE9E9;")
+            control = false;
+        }
+        for (let j = 0; j < 2; j++) {
+            let noMandatoryAnswer = currentItem.querySelectorAll(".form .no-mandatory.wrong-answer");
+            let noMandatoryUrl = currentItem.querySelectorAll(".no-mandatory.url-wrong-answer");
 
+            let itemAnswer = noMandatoryAnswer[j];
+            let itemUrl = noMandatoryUrl[j];
+            if (itemAnswer.value !== "" || itemUrl.value !== "") {
+                let isvalidUrl = isValidHttpUrl(itemUrl.value);
 
-        questionsInfo.title = inputTitle;
-        questionsInfo.color = inputColor;
+                if (isvalidUrl === false) {
+                    itemUrl.nextElementSibling.innerHTML = "A URL é inválida"
+                    itemUrl.setAttribute("style", "background-color: #FFE9E9")
+                    control = false;
+                }
+            }
+        }
+    }
+    if (control === false) {
+        return;
+    }
 
-        answersInfo.text = inputCorrectAnswer;
-        answersInfo.image = inputImageCa;
+    item.forEach((element) => {
+
+        let inputTitle = element.querySelector(".form .mandatory.title");
+        let inputColor = element.querySelector(".form .mandatory.color");
+        let inputCorrectAnswer = element.querySelector(".form .mandatory.correct-answer");
+        let inputImageCa = element.querySelector(".form .mandatory.url-correct-answer");
+        let inputWrongAnswer = element.querySelector(".form .mandatory.wrong-answer");
+        let inputImageWa = element.querySelector(".form .mandatory.url-wrong-answer");
+
+        questionsInfo.title = inputTitle.value;
+        questionsInfo.color = inputColor.value;
+
+        answersInfo.text = inputCorrectAnswer.value;
+        answersInfo.image = inputImageCa.value;
         answersInfo.isCorrectAnswer = true;
         questionsInfo.answers.push(answersInfo);
 
@@ -417,8 +508,8 @@ A cor de fundo deve seguir o padrão Hexadecimal, conforme o modelo: #FFFFFF`)
             isCorrectAnswer: ""
         }
 
-        answersInfo.text = inputWrongAnswer;
-        answersInfo.image = inputImageWa;
+        answersInfo.text = inputWrongAnswer.value;
+        answersInfo.image = inputImageWa.value;
         answersInfo.isCorrectAnswer = false;
         questionsInfo.answers.push(answersInfo);
 
@@ -428,19 +519,13 @@ A cor de fundo deve seguir o padrão Hexadecimal, conforme o modelo: #FFFFFF`)
             image: "",
             isCorrectAnswer: ""
         }
-
         for (let j = 0; j < 2; j++) {
-            let noMandatoryAnswer = currentItem.querySelectorAll(".form .no-mandatory.wrong-answer");
-            let noMandatoryUrl = currentItem.querySelectorAll(".no-mandatory.url-wrong-answer");
+            let noMandatoryAnswer = element.querySelectorAll(".form .no-mandatory.wrong-answer");
+            let noMandatoryUrl = element.querySelectorAll(".no-mandatory.url-wrong-answer");
 
             let itemAnswer = noMandatoryAnswer[j].value;
             let itemUrl = noMandatoryUrl[j].value;
             if (itemAnswer !== "" || itemUrl !== "") {
-                let isvalidUrl = isValidHttpUrl(itemUrl);
-                if (itemAnswer.length < 20 || isvalidUrl === false) {
-                    alert("Verifique os dados digitados !")
-                    return;
-                }
                 answersInfo.isCorrectAnswer = false;
                 answersInfo.text = itemAnswer;
                 answersInfo.image = itemUrl;
@@ -454,13 +539,13 @@ A cor de fundo deve seguir o padrão Hexadecimal, conforme o modelo: #FFFFFF`)
                 }
             }
         }
-
         questionsInfo = {
             title: "",
             color: "",
             answers: []
         }
-    }
+    })
+
     createLevel()
     screenTwo.innerHTML = ""
 }
@@ -470,7 +555,7 @@ function createLevel() {
     screenTwo.classList.add('hide')
     screenThree.classList.remove('hide')
 
-    for (let i = 1; i <= nLevel; i++) {
+    for (let i = 1; i <= nLevel.value; i++) {
         screenThree.innerHTML += `
             <div class="minimized" onclick = "openForm(this)">
                 <h1>Nível ${i}</h1>
@@ -480,9 +565,13 @@ function createLevel() {
                 <div class="form hide">
                     <h1>Nível ${i}</h1>
                     <input class= "title" type="text" placeholder="Título do nível">
-                    <input class = "min-value" type="text" placeholder="% de acerto mínima">
+                    <p class ='error title'> </p>
+                    <input class = "min-value" type="number" placeholder="% de acerto mínima">
+                    <p class ='error min-value'> </p>
                     <input class = "url-image" type="text" placeholder="URL da imagem do nível">
+                    <p class ='error image'> </p>
                     <input class = "description" type="text" placeholder="Descrição do nível">
+                    <p class ='error description'> </p>
                 </div>
             </div>
         `
@@ -494,31 +583,53 @@ function createLevel() {
 function VerificationLevels() {
     const item = document.querySelectorAll('.screen-three .form-Field');
     const minValueLevels = []
-    for (let i = 0; i < item.length; i++) {
-        const element = item[i];
-        let title = element.querySelector(".form .title").value;
+    const allInputs = document.querySelectorAll(".screen-three input")
+    allInputs.forEach((item) => {
+        item.setAttribute("style", "background-color:#FFFFF;")
+        item.nextElementSibling.innerHTML = ""
+    })
+    let control = true;
+    item.forEach((element) => {
+        let title = element.querySelector(".form .title");
+        let inputMinValue = element.querySelector(".form .min-value")
+        let minValue = inputMinValue.value;
+        console.log(minValue)
+        let urlImage = element.querySelector(".form .url-image")
+        let description = element.querySelector(".form .description");
+
+        let isValid = isValidHttpUrl(urlImage.value);
+
+        if (title.value.length < 10) {
+            title.nextElementSibling.innerHTML = "O título deve ter no mínimo 10 caracteres"
+            title.setAttribute("style", "background-color: #FFE9E9")
+            control = false;
+        }
+        if (isValid === false) {
+            urlImage.nextElementSibling.innerHTML = "A URL não é válida"
+            urlImage.setAttribute("style", "background-color: #FFE9E9")
+            control = false;
+        }
+        if (description.value.length < 30) {
+            description.nextElementSibling.innerHTML = "A descrição deve ter no mínimo 30 caracteres"
+            description.setAttribute("style", "background-color:#FFE9E9")
+            control = false;
+        }
+
+        if (minValue == NaN || minValue > 100 || minValue < 0 || minValue === "") {
+            inputMinValue.nextElementSibling.innerHTML = "Digite um número entre 0 e 100"
+            inputMinValue.setAttribute("style", "background-color:#FFE9E9");
+            control = false;
+        }
+    })
+    if (control === false) {
+        return;
+    }
+
+    item.forEach((element) => {
+        let title = element.querySelector(".form .title");
         let minValue = parseInt(element.querySelector(".form .min-value").value);
-        let urlImage = element.querySelector(".form .url-image").value;
-        let description = element.querySelector(".form .description").value;
-
-        let isValid = isValidHttpUrl(urlImage);
-
-        if (title.length < 10 || isValid === false || description.length < 30) {
-            alert(`Os dados inseridos devem seguir este padrão:
-Título deve conter mais de 10 caracteres.
-A % de acerto mínima deve estar entre 0 e 100.
-A URL da imagen devem serguir o padrão: http://...
-A descrição do nível deve ser maior do que 30 caracteres.`)
-            return;
-        }
-        if (minValue === NaN || minValue > 100 || minValue < 0) {
-            alert(`Os dados inseridos devem seguir este padrão:
-Título deve conter mais de 10 caracteres.
-A % de acerto mínima deve estar entre 0 e 100.
-A URL da imagen devem serguir o padrão: http://...
-A descrição do nível deve ser maior do que 30 caracteres.`)
-            return;
-        }
+        let urlImage = element.querySelector(".form .url-image")
+        let description = element.querySelector(".form .description");
         minValueLevels.push(minValue);
 
         levelsInfo.title = title;
@@ -532,7 +643,8 @@ A descrição do nível deve ser maior do que 30 caracteres.`)
             text: "",
             minValue: ""
         }
-    }
+
+    })
 
     for (let i = 0; i < minValueLevels.length; i++) {
         const element = minValueLevels[i];
@@ -542,7 +654,7 @@ A descrição do nível deve ser maior do que 30 caracteres.`)
             return;
         }
     }
-    alert("Verifique os dados digitados!")
+    alert("Deve existir um nível com minValue = 0 !")
 }
 
 function finishQuizz() {
