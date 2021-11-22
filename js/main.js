@@ -7,6 +7,7 @@ let scrollTo = 0;
 let responseObject;
 let data;
 let createdQuizzes = [];
+let confirmed = '';
 
 const main = document.querySelector('.main')
 const screenOne = document.querySelector('.screen-one')
@@ -55,6 +56,7 @@ function loadQuizzes(el) {
         document.querySelector(".your-quizz").classList.remove("hide");
     }
 
+
     const yourThumbnail = document.querySelector(".your-quizz .your-thumbnails");
     yourThumbnail.innerHTML = ""
     getThumbnails.innerHTML = ''
@@ -68,8 +70,8 @@ function loadQuizzes(el) {
                     yourThumbnail.innerHTML += `
                     <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
                         <nav class = "sidebar"> 
-                            <ion-icon name="create-outline" id = "edit"></ion-icon>
-                            <ion-icon name="trash"></ion-icon>
+                            <ion-icon name="create-outline" id="edit" onclick="console.log('editar')"></ion-icon>
+                            <ion-icon name="trash" id='delete'></ion-icon>
                         </nav>
                         <img src="${el.data[i].image}">
                         <h2>${el.data[i].title}</h2>
@@ -77,6 +79,8 @@ function loadQuizzes(el) {
                     control = true;
                     const createOutline = document.querySelector(".sidebar #edit")
                     createOutline.addEventListener("click", edit, false)
+                    const trash = document.querySelector(".sidebar #delete")
+                    trash.addEventListener("click", trashFunction, false)
                 }
             }
         }
@@ -91,13 +95,18 @@ function loadQuizzes(el) {
             `
     }
 
-    
-}
-function edit (ev) {
-    createQuizz()
-    ev.stopPropagation()
 
 }
+function edit(ev) {
+    createQuizz()
+    ev.stopPropagation()
+}
+
+function trashFunction(ev) {
+    deleteQuizz(ev)
+    ev.stopPropagation()
+}
+
 function openQuizz(element) {
     const hideMain = document.querySelector('.main')
     const showQuizz = document.querySelector('.opened-quizz')
@@ -578,4 +587,29 @@ function openForm(item) {
 
     nextElement.classList.toggle("hide")
 
+}
+function deleteQuizz(ev) {
+    console.log('ta no delete')
+    console.log(ev)
+    console.log(createdQuizzes[0].id)
+    console.log(createdQuizzes[0].key)
+
+    axios.delete(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${createdQuizzes[0].id}`, { headers: { 'Secret-Key': createdQuizzes[0].key } })
+        .then(() => {
+            createdQuizzes.pop()
+            const deleteQuizzesSerial = JSON.stringify(createdQuizzes)
+            localStorage.setItem("myQuizzes", deleteQuizzesSerial);
+            console.log('antes da funcao')
+        })
+
+    teste()
+    console.log('depois da funcao')
+}
+
+function teste() {
+
+    console.log('entrou no if')
+    localStorage.removeItem("myQuizzes")
+    document.querySelector(".selected-quizz").classList.remove("hide");
+    document.querySelector(".your-quizz").classList.add("hide");
 }
