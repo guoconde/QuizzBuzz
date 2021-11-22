@@ -43,6 +43,8 @@ axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
     .then(loadQuizzes)
     .catch(getError)
 
+
+
 function loadQuizzes(el) {
     let myQuizzes = localStorage.getItem("myQuizzes")
     myQuizzes = JSON.parse(myQuizzes);
@@ -50,8 +52,7 @@ function loadQuizzes(el) {
     if (myQuizzes !== null) {
         createdQuizzes = myQuizzes;
         document.querySelector(".selected-quizz").classList.add("hide");
-        const yourQuizz = document.querySelector(".your-quizz");
-        yourQuizz.classList.remove("hide");
+        document.querySelector(".your-quizz").classList.remove("hide");
     }
 
     const yourThumbnail = document.querySelector(".your-quizz .your-thumbnails");
@@ -62,14 +63,20 @@ function loadQuizzes(el) {
         let control = false;
         if (myQuizzes !== null) {
             for (let j = 0; j < myQuizzes.length; j++) {
-                const element = myQuizzes[j];
+                let element = myQuizzes[j].id;
                 if (el.data[i].id === element) {
                     yourThumbnail.innerHTML += `
                     <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
+                        <nav class = "sidebar"> 
+                            <ion-icon name="create-outline" id = "edit"></ion-icon>
+                            <ion-icon name="trash"></ion-icon>
+                        </nav>
                         <img src="${el.data[i].image}">
                         <h2>${el.data[i].title}</h2>
                     </div>`
                     control = true;
+                    const createOutline = document.querySelector(".sidebar #edit")
+                    createOutline.addEventListener("click", edit, false)
                 }
             }
         }
@@ -83,6 +90,13 @@ function loadQuizzes(el) {
                 </div>
             `
     }
+
+    
+}
+function edit (ev) {
+    createQuizz()
+    ev.stopPropagation()
+
 }
 function openQuizz(element) {
     const hideMain = document.querySelector('.main')
@@ -94,7 +108,7 @@ function openQuizz(element) {
 
     showQuizz.classList.remove('hide')
     const screenFour = document.querySelector(".screen-four");
-    if (!screenFour.classList.contains("hide")){
+    if (!screenFour.classList.contains("hide")) {
         screenFour.classList.add("hide")
     }
     axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${element}`)
@@ -166,8 +180,6 @@ function renderQuiz(response) {
 }
 
 function pickOption(element, isCorrect) {
-    // const content = document.querySelectorAll('.opened-quizz .content')
-
     setTimeout(() => {
         const content = document.querySelectorAll('.opened-quizz .content')
         content[scrollTo].scrollIntoView();
@@ -197,20 +209,20 @@ function pickOption(element, isCorrect) {
     if (replied === numOfQuestions) {
         let score = (points / numOfQuestions) * 100;
         score = Math.floor(score);
-        let group;
+        let levelGroup;
         for (let i = 0; i < levels.length; i++) {
             let value = levels[i];
 
             if (score >= value.minValue) {
-                group = value;
+                levelGroup = value;
             }
         }
         quizz.innerHTML += `
             <div class="output">
-                <p class="title">${score}% de acerto: ${group.title}</p>
+                <p class="title">${score}% de acerto: ${levelGroup.title}</p>
                 <div class="info">
-                    <img src="${group.image}" >
-                    <p class="text">${group.text}</p>
+                    <img src="${levelGroup.image}" >
+                    <p class="text">${levelGroup.text}</p>
                  </div>
             </div>
             `
@@ -527,7 +539,6 @@ A descrição do nível deve ser maior do que 30 caracteres.`)
 function finishQuizz() {
     const promise = axios.post('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes', newQuestions)
     promise.then((response) => {
-        console.log(response)
         screenThree.classList.add('hide')
         screenFour.classList.remove('hide')
 
@@ -540,15 +551,15 @@ function finishQuizz() {
             <button class="btn" onclick="openQuizz(${response.data.id})">Acessar Quizz</button>
             <button class="btn-comeback" onclick="comeback()">Voltar pra home</button>
         `
-        storeMyQuizz(response.data.id)
+        storeMyQuizz(response.data)
     })
 
     promise.catch((er) => {
-        console.log(er)
+        alert("Algo não funcionou :( Tente novamente!")
     });
 }
-function storeMyQuizz(id) {
-    createdQuizzes.push(id)
+function storeMyQuizz(data) {
+    createdQuizzes.push(data)
     const createdQuizzesSerial = JSON.stringify(createdQuizzes)
     localStorage.setItem("myQuizzes", createdQuizzesSerial);
 }
