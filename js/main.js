@@ -70,17 +70,13 @@ function loadQuizzes(el) {
                     yourThumbnail.innerHTML += `
                     <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
                         <nav class = "sidebar"> 
-                            <ion-icon name="create-outline" id="edit" onclick="console.log('editar')"></ion-icon>
+                            <ion-icon name="create-outline" id="edit"></ion-icon>
                             <ion-icon name="trash" id='delete'></ion-icon>
                         </nav>
                         <img src="${el.data[i].image}">
                         <h2>${el.data[i].title}</h2>
                     </div>`
                     control = true;
-                    const createOutline = document.querySelector(".sidebar #edit")
-                    createOutline.addEventListener("click", edit, false)
-                    const trash = document.querySelector(".sidebar #delete")
-                    trash.addEventListener("click", trashFunction, false)
                 }
             }
         }
@@ -88,23 +84,24 @@ function loadQuizzes(el) {
             continue;
         }
         getThumbnails.innerHTML += `
-                <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
-                    <img src="${el.data[i].image}">
-                    <h2>${el.data[i].title}</h2>
-                </div>
-            `
+        <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
+        <img src="${el.data[i].image}">
+        <h2>${el.data[i].title}</h2>
+        </div>
+        `
     }
+    const createOutline = document.querySelectorAll(".sidebar #edit")
+    createOutline.forEach(c => c.addEventListener("click", ev => {
+        createQuizz()
+        ev.stopPropagation()
+    }))
 
+    const trash = document.querySelectorAll(".sidebar #delete")
+    trash.forEach(t => t.addEventListener("click", ev => {
+        deleteQuizz(ev)
+        ev.stopPropagation()
+    }))
 
-}
-function edit(ev) {
-    createQuizz()
-    ev.stopPropagation()
-}
-
-function trashFunction(ev) {
-    deleteQuizz(ev)
-    ev.stopPropagation()
 }
 
 function openQuizz(element) {
@@ -123,6 +120,8 @@ function openQuizz(element) {
     axios.get(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${element}`)
         .then(renderQuiz)
         .catch(getError)
+
+    return element
 }
 
 const quizz = document.querySelector(".opened-quizz");
@@ -281,9 +280,9 @@ function comeback() {
     scrollTo = 0;
 
     document.querySelector('.screen-one .form input:first-child').value = ''
-    document.querySelector('.screen-one .form input:nth-child(2)').value = ''
     document.querySelector('.screen-one .form input:nth-child(3)').value = ''
-    document.querySelector('.screen-one .form input:nth-child(4)').value = ''
+    document.querySelector('.screen-one .form input:nth-child(5)').value = ''
+    document.querySelector('.screen-one .form input:nth-child(7)').value = ''
     nQuestions = ''
     nLevel = ''
     newQuestions.title = ''
@@ -702,27 +701,31 @@ function openForm(item) {
 }
 function deleteQuizz(ev) {
     console.log('ta no delete')
-    console.log(ev)
+    console.dir(parseInt(ev.target.parentNode.parentNode.attributes[1].value.replace('openQuizz(', '').replace(')', '')))
     console.log(createdQuizzes[0].id)
     console.log(createdQuizzes[0].key)
 
-    axios.delete(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${createdQuizzes[0].id}`, { headers: { 'Secret-Key': createdQuizzes[0].key } })
-        .then(() => {
-            createdQuizzes.pop()
-            const deleteQuizzesSerial = JSON.stringify(createdQuizzes)
-            localStorage.setItem("myQuizzes", deleteQuizzesSerial);
-            console.log('antes da funcao')
+    // axios.delete(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${createdQuizzes[0].id}`, { headers: { 'Secret-Key': createdQuizzes[0].key } })
+    //     .then(() => {
+    //         createdQuizzes.pop()
+    //         const deleteQuizzesSerial = JSON.stringify(createdQuizzes)
+    //         localStorage.setItem("myQuizzes", deleteQuizzesSerial);
+    //         console.log('antes da funcao')
 
 
 
-        })
-
-
+    //     })
+    // const trash = document.querySelector(".sidebar #delete")
+    // trash.addEventListener("click", ev => {
+    //     console.log(ev.parentNode)
+    //     console.log('to aqui')
+    // })
 }
 
-function teste() {
+function teste(ev) {
 
-    console.log(createdQuizzes)
+    console.log(createdQuizzes[0].id)
+
 
     if (createdQuizzes.length <= 0) {
         // console.log('entrou no if')
