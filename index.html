@@ -29,19 +29,19 @@
     <main class="main hide">
         <div class="selected-quizz">
             <h1>Você não criou nenhum quizz ainda :(</h1>
-            <button class="btn-create-quizz" onclick="createQuizz()">Criar Quizz</button>
+            <button class="btn-create-quizz" onclick="createQuizz()" data-identifier="create-quizz">Criar Quizz</button>
         </div>
-        <div class="your-quizz hide">
+        <div class="your-quizz hide" data-identifier="user-quizzes">
             <div>
                 <h1>Seus Quizzes</h1>
-                <button class="btn-plus" onclick="createQuizz()">+</button>
+                <button class="btn-plus" onclick="createQuizz()" data-identifier="create-quizz">+</button>
             </div>
             <div class="your-thumbnails">
 
             </div>
         </div>
         </div>
-        <div class="all-quizz">
+        <div class="all-quizz" data-identifier="general-quizzes">
             <h1>Todos os Quizzes</h1>
             <div class="thumbnails">
 
