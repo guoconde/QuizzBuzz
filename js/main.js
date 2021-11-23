@@ -17,6 +17,7 @@ const screenTwo = document.querySelector('.screen-two')
 const screenThree = document.querySelector('.screen-three')
 const screenFour = document.querySelector('.screen-four')
 const screenConfirm = document.querySelector('.confirmDelete')
+const screenLoad = document.querySelector('.loading')
 
 let nQuestions = ''
 let nLevel = ''
@@ -72,11 +73,17 @@ function verifyMyQuizzes(el) {
         createdQuizzes = allQuizzes;
     }
 
-    loadQuizzes(el, createdQuizzes);
+    main.classList.add('hide')
+    screenLoad.classList.remove('hide')
+
+    setTimeout(() => {
+        main.classList.remove('hide')
+        screenLoad.classList.add('hide')
+        loadQuizzes(el, createdQuizzes)
+    }, 3000)
 }
 
 function loadQuizzes(el, myQuizzes) {
-    console.log(myQuizzes[0])
     if (myQuizzes[0] !== undefined) {
         document.querySelector(".selected-quizz").classList.add("hide");
         document.querySelector(".your-quizz").classList.remove("hide");
@@ -125,14 +132,21 @@ function loadQuizzes(el, myQuizzes) {
     trash.forEach(t => t.addEventListener("click", ev => {
         eventListener = ev
         main.classList.add('hide')
-        screenConfirm.classList.remove('hide')
+
+        screenLoad.classList.remove('hide')
         ev.stopPropagation()
+
+        setTimeout(() => {
+            screenLoad.classList.add('hide')
+            screenConfirm.classList.remove('hide')
+        }, 3000)
 
     }))
 
 }
 
 function openQuizz(element) {
+
     const hideMain = document.querySelector('.main')
     const showQuizz = document.querySelector('.opened-quizz')
 
@@ -155,64 +169,71 @@ function openQuizz(element) {
 const quizz = document.querySelector(".opened-quizz");
 
 function renderQuiz(response) {
-    responseObject = response;
-    data = responseObject.data
-    numOfQuestions = data.questions.length;
-
-    quizz.innerHTML = ''
-    quizz.innerHTML += `<div class="picture"></div>`
-
-    const mainImage = data.image;
-    const title = data.title;
-
-    const showImage = document.querySelector(".picture");
-    showImage.innerHTML = `
-        <p class="title">${title}</p>
-        <img src="${mainImage}">
-    `
-
-    let answerObject = [];
-
-    for (let i = 0; i < data.questions.length; i++) {
-        if (data.levels[i] !== undefined) {
-            levels.push(data.levels[i])
-        }
-        let text = `
-        <div class="content">
-            <p class="title" style="background-color: ${data.questions[i].color};">${data.questions[i].title} </p>
-            <div class="answers"> `
-        for (let j = 0; j < data.questions[i].answers.length; j++) {
-            const answer = data.questions[i].answers[j];
-
-            answerObject.push(answer);
-        }
-        answerObject.sort(() => {
-            return Math.random() - 0.5;
-        })
-
-        for (let k = 0; k < answerObject.length; k++) {
-
-            text += `
-                <div class="option" onclick = "pickOption(this, ${answerObject[k].isCorrectAnswer})">
-                    <img src="${answerObject[k].image}" >
-                    <p id = "${answerObject[k].isCorrectAnswer}">${answerObject[k].text}</p>
-                 </div>
-           `
-        }
-
-        text += `
-                </div>
-            </div>`
-        quizz.innerHTML += text;
-        answerObject = [];
-    }
-
+    main.classList.add('hide')
+    screenLoad.classList.remove('hide')
 
     setTimeout(() => {
-        const content = document.querySelectorAll('.opened-quizz .content')
-        content[scrollTo].scrollIntoView();
-        scrollTo++
-    }, 2000)
+        screenLoad.classList.add('hide')
+
+        responseObject = response;
+        data = responseObject.data
+        numOfQuestions = data.questions.length;
+
+        quizz.innerHTML = ''
+        quizz.innerHTML += `<div class="picture"></div>`
+
+        const mainImage = data.image;
+        const title = data.title;
+
+        const showImage = document.querySelector(".picture");
+        showImage.innerHTML = `
+        <p class="title">${title}</p>
+        <img src="${mainImage}">
+        `
+
+        let answerObject = [];
+
+        for (let i = 0; i < data.questions.length; i++) {
+            if (data.levels[i] !== undefined) {
+                levels.push(data.levels[i])
+            }
+            let text = `
+            <div class="content">
+            <p class="title" style="background-color: ${data.questions[i].color};">${data.questions[i].title} </p>
+            <div class="answers"> `
+            for (let j = 0; j < data.questions[i].answers.length; j++) {
+                const answer = data.questions[i].answers[j];
+
+                answerObject.push(answer);
+            }
+            answerObject.sort(() => {
+                return Math.random() - 0.5;
+            })
+
+            for (let k = 0; k < answerObject.length; k++) {
+
+                text += `
+            <div class="option" onclick = "pickOption(this, ${answerObject[k].isCorrectAnswer})">
+            <img src="${answerObject[k].image}" >
+            <p id = "${answerObject[k].isCorrectAnswer}">${answerObject[k].text}</p>
+            </div>
+            `
+            }
+
+            text += `
+        </div>
+        </div>`
+            quizz.innerHTML += text;
+            answerObject = [];
+        }
+
+
+        setTimeout(() => {
+            const content = document.querySelectorAll('.opened-quizz .content')
+            content[scrollTo].scrollIntoView();
+            scrollTo++
+        }, 2000)
+    }, 3000)
 }
 
 function pickOption(element, isCorrect) {
@@ -295,31 +316,38 @@ function restart() {
 }
 
 function comeback() {
-    document.querySelector(".main").classList.remove("hide")
-    document.querySelector(".main").classList.remove("show")
-    document.querySelector(".opened-quizz").classList.remove("show")
     document.querySelector(".opened-quizz").classList.add("hide")
     screenFour.classList.add('hide')
 
-    points = 0;
-    numOfQuestions = 0;
-    replied = 0;
-    levels = [];
-    scrollTo = 0;
+    screenLoad.classList.remove('hide')
+    setTimeout(() => {
+        screenLoad.classList.add('hide')
 
-    const inputScreenOne = document.querySelectorAll('.screen-one .form input')
-    inputScreenOne.forEach((i) => i.value = '');
+        document.querySelector(".main").classList.remove("hide")
+        document.querySelector(".main").classList.remove("show")
+        document.querySelector(".opened-quizz").classList.remove("show")
 
-    nQuestions = ''
-    nLevel = ''
-    newQuestions.title = ''
-    newQuestions.image = ''
-    newQuestions.questions = []
-    newQuestions.levels = []
+        points = 0;
+        numOfQuestions = 0;
+        replied = 0;
+        levels = [];
+        scrollTo = 0;
 
-    window.scroll(0, 0)
-    const promise = axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
-    promise.then(loadQuizzes)
+        const inputScreenOne = document.querySelectorAll('.screen-one .form input')
+        inputScreenOne.forEach((i) => i.value = '');
+
+        nQuestions = ''
+        nLevel = ''
+        newQuestions.title = ''
+        newQuestions.image = ''
+        newQuestions.questions = []
+        newQuestions.levels = []
+
+        window.scroll(0, 0)
+
+        const promise = axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
+        promise.then(loadQuizzes)
+    }, 3000)
 }
 
 function isValidHttpUrl(string) {
@@ -335,7 +363,12 @@ function isValidHttpUrl(string) {
 }
 function createQuizz() {
     main.classList.add('hide')
-    screenOne.classList.remove('hide')
+    screenLoad.classList.remove('hide')
+
+    setTimeout(() => {
+        screenLoad.classList.add('hide')
+        screenOne.classList.remove('hide')
+    }, 3000)
 }
 function verificationInfo() {
     let quizzTitle = document.querySelector('.screen-one .form input:first-child')
@@ -744,9 +777,10 @@ function deleteQuizz() {
 }
 
 function confirm() {
+    main.classList.remove('hide')
+
     confirmed = true
     deleteQuizz()
-    main.classList.remove('hide')
     screenConfirm.classList.add('hide')
 }
 
