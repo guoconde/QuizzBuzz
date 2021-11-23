@@ -8,4 +8,4 @@ Exercício de JS
 
 Trabalho em dupla com:  Kayque Coelho https://github.com/tieskay
 
-Url do resultado final (em construção): https://guoconde.github.io/QuizzBuzz/
+Url do resultado final: https://guoconde.github.io/QuizzBuzz/
