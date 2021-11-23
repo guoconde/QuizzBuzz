@@ -10,6 +10,7 @@ let createdQuizzes = [];
 let confirmed = false;
 let eventListener = ''
 
+
 const main = document.querySelector('.main')
 const screenOne = document.querySelector('.screen-one')
 const screenTwo = document.querySelector('.screen-two')
@@ -43,21 +44,43 @@ let levelsInfo = {
     minValue: ""
 }
 axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
-    .then(loadQuizzes)
+    .then(verifyMyQuizzes)
     .catch(getError)
 
-
-
-function loadQuizzes(el) {
+function verifyMyQuizzes(el) {
     let myQuizzes = localStorage.getItem("myQuizzes")
-    myQuizzes = JSON.parse(myQuizzes);
+    console.log(myQuizzes)
+    if (myQuizzes !== null && myQuizzes !== ""){
 
-    if (myQuizzes !== null) {
+        myQuizzes = JSON.parse(myQuizzes);
         createdQuizzes = myQuizzes;
+        
+        const allQuizzes = []
+    
+        for (let i = 0; i < createdQuizzes.length; i++) {
+            const item = myQuizzes[i].id;
+    
+            for (let j = 0; j < el.data.length; j++) {
+                const element = el.data[j].id;
+                if (element === item) {
+                    console.log(item)
+                    allQuizzes.push(myQuizzes[i])
+                }
+            }
+        }
+        
+        createdQuizzes = allQuizzes;
+    }
+
+    loadQuizzes(el, createdQuizzes);
+}
+
+function loadQuizzes(el, myQuizzes) {
+    console.log(myQuizzes[0])
+    if (myQuizzes[0] !== undefined) {
         document.querySelector(".selected-quizz").classList.add("hide");
         document.querySelector(".your-quizz").classList.remove("hide");
     }
-
 
     const yourThumbnail = document.querySelector(".your-quizz .your-thumbnails");
     yourThumbnail.innerHTML = ""
@@ -65,7 +88,7 @@ function loadQuizzes(el) {
 
     for (let i = 0; i < el.data.length; i++) {
         let control = false;
-        if (myQuizzes !== null) {
+        if (myQuizzes[0] !== undefined) {
             for (let j = 0; j < myQuizzes.length; j++) {
                 let element = myQuizzes[j].id;
                 if (el.data[i].id === element) {
@@ -94,7 +117,7 @@ function loadQuizzes(el) {
     }
     const createOutline = document.querySelectorAll(".sidebar #edit")
     createOutline.forEach(c => c.addEventListener("click", ev => {
-        createQuizz()
+        editQuizz(ev)
         ev.stopPropagation()
     }))
 
@@ -284,10 +307,9 @@ function comeback() {
     levels = [];
     scrollTo = 0;
 
-    document.querySelector('.screen-one .form input:first-child').value = ''
-    document.querySelector('.screen-one .form input:nth-child(3)').value = ''
-    document.querySelector('.screen-one .form input:nth-child(5)').value = ''
-    document.querySelector('.screen-one .form input:nth-child(7)').value = ''
+    const inputScreenOne = document.querySelectorAll('.screen-one .form input')
+    inputScreenOne.forEach((i) => i.value = '');
+
     nQuestions = ''
     nLevel = ''
     newQuestions.title = ''
@@ -321,42 +343,32 @@ function verificationInfo() {
     nQuestions = document.querySelector('.screen-one .form input:nth-child(5)')
     nLevel = document.querySelector('.screen-one .form input:nth-child(7)')
 
-    quizzTitle.setAttribute("style", "background-color:#FFFFFF;")
-    quizzImage.setAttribute("style", "background-color:#FFFFFF;")
-    nQuestions.setAttribute("style", "background-color:#FFFFFF;")
-    nLevel.setAttribute("style", "background-color:#FFFFFF;")
-
-
-    const errorTitle = document.querySelector(".screen-one .form .error.title")
-    const errorUrl = document.querySelector(".screen-one .form .error.image")
-    const errorNLevels = document.querySelector(".screen-one .form .error.nlevels")
-    const errorNQuestions = document.querySelector(".screen-one .form .error.nquestions")
-
-    errorTitle.innerHTML = ""
-    errorUrl.innerHTML = ""
-    errorNLevels.innerHTML = ""
-    errorNQuestions.innerHTML = ""
+    const allInputs = document.querySelectorAll(".screen-one input")
+    allInputs.forEach(a => {
+        a.setAttribute("style", "background-color:#FFFFF;")
+        a.nextElementSibling.innerHTML = ""
+    })
 
     const isValid = isValidHttpUrl(quizzImage.value);
     let control = true;
 
     if (quizzTitle.value.length < 20 || quizzTitle.value.length > 65) {
-        errorTitle.innerHTML = "O título deve ter entre 20 e 65 caracteres";
+        quizzTitle.nextElementSibling.innerHTML = "O título deve ter entre 20 e 65 caracteres";
         quizzTitle.setAttribute("style", "background-color:#FFE9E9;")
         control = false
     }
     if (isValid === false) {
-        errorUrl.innerHTML = "A URL não é válida";
+        quizzImage.nextElementSibling.innerHTML = "A URL não é válida";
         quizzImage.setAttribute("style", "background-color:#FFE9E9;")
         control = false
     }
     if (nQuestions.value < 3) {
-        errorNQuestions.innerHTML = "O quizz deve ter pelo menos 3 perguntas";
+        nQuestions.nextElementSibling.innerHTML = "O quizz deve ter pelo menos 3 perguntas";
         nQuestions.setAttribute("style", "background-color:#FFE9E9;")
         control = false
     }
     if (nLevel.value < 2) {
-        errorNLevels.innerHTML = "O quizz deve ter pelo menos 2 níveis";
+        nLevel.nextElementSibling.innerHTML = "O quizz deve ter pelo menos 2 níveis";
         nLevel.setAttribute("style", "background-color:#FFE9E9;")
         control = false
     }
@@ -738,8 +750,18 @@ function confirm() {
     screenConfirm.classList.add('hide')
 }
 
+<<<<<<< HEAD
 function reject() {
     confirmed = false
     main.classList.remove('hide')
     screenConfirm.classList.add('hide')
 }
+=======
+    }
+}
+function editQuizz(ev) {
+    const ObjectId = parseInt(ev.target.parentNode.parentNode.attributes[1].value.replace('openQuizz(', '').replace(')', ''))
+    console.log(ObjectId)
+    console.log(createdQuizzes)
+}
+>>>>>>> 84ad3fecd46b7be691576cdad916a74c35799c29
