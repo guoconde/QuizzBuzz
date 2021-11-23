@@ -203,7 +203,7 @@ function renderQuiz(response) {
             }
             let text = `
             <div class="content">
-            <p class="title" style="background-color: ${data.questions[i].color};">${data.questions[i].title} data-identifier="question"</p>
+            <p class="title" style="background-color: ${data.questions[i].color};" data-identifier="question">${data.questions[i].title} </p>
             <div class="answers"> `
             for (let j = 0; j < data.questions[i].answers.length; j++) {
                 const answer = data.questions[i].answers[j];
@@ -322,6 +322,7 @@ function restart() {
 function comeback() {
     document.querySelector(".opened-quizz").classList.add("hide")
     screenFour.classList.add('hide')
+    document.querySelector(".opened-quizz").innerHTML = "";
 
     screenLoad.classList.remove('hide')
     setTimeout(() => {
@@ -511,7 +512,7 @@ function createAnswers() {
 
     
     screenTwo.innerHTML += `<button class="btn" onclick="verificationQuestions ()">Prosseguir para criar níveis</button>`
-    console.log(editElement)
+    
     if (editElement !== undefined) {
         const item = document.querySelectorAll('.screen-two .form-Field');
         for (let i = 0; i < item.length; i++) {
@@ -532,7 +533,6 @@ function createAnswers() {
             inputImageWa.value = editElement.questions[i].answers[1].image;
 
             let noMandatoryAnswer1 = currentItem.querySelector(".form .no-mandatory.wrong-answer.id1");
-            console.log(noMandatoryAnswer1)
             let noMandatoryAnswer2 = currentItem.querySelector(".form .no-mandatory.wrong-answer.id2");
             let noMandatoryUrl1 = currentItem.querySelector(".no-mandatory.url-wrong-answer.id1");
             let noMandatoryUrl2 = currentItem.querySelector(".no-mandatory.url-wrong-answer.id2");
@@ -621,8 +621,7 @@ function verificationQuestions() {
     }
     if (editElement !== undefined) {
         editElement.questions = []
-        console.log("Passei Aqui")
-        console.log(editElement)
+        
     }
     if (control === false) {
         return;
