@@ -50,16 +50,16 @@ axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
 function verifyMyQuizzes(el) {
     let myQuizzes = localStorage.getItem("myQuizzes")
     console.log(myQuizzes)
-    if (myQuizzes !== null && myQuizzes !== ""){
+    if (myQuizzes !== null && myQuizzes !== "") {
 
         myQuizzes = JSON.parse(myQuizzes);
         createdQuizzes = myQuizzes;
-        
+
         const allQuizzes = []
-    
+
         for (let i = 0; i < createdQuizzes.length; i++) {
             const item = myQuizzes[i].id;
-    
+
             for (let j = 0; j < el.data.length; j++) {
                 const element = el.data[j].id;
                 if (element === item) {
@@ -68,7 +68,7 @@ function verifyMyQuizzes(el) {
                 }
             }
         }
-        
+
         createdQuizzes = allQuizzes;
     }
 
@@ -750,18 +750,8 @@ function confirm() {
     screenConfirm.classList.add('hide')
 }
 
-<<<<<<< HEAD
 function reject() {
     confirmed = false
     main.classList.remove('hide')
     screenConfirm.classList.add('hide')
 }
-=======
-    }
-}
-function editQuizz(ev) {
-    const ObjectId = parseInt(ev.target.parentNode.parentNode.attributes[1].value.replace('openQuizz(', '').replace(')', ''))
-    console.log(ObjectId)
-    console.log(createdQuizzes)
-}
->>>>>>> 84ad3fecd46b7be691576cdad916a74c35799c29
