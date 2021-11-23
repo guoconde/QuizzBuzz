@@ -104,7 +104,7 @@ function loadQuizzes(el, myQuizzes) {
                     let element = myQuizzes[j].id;
                     if (el.data[i].id === element) {
                         yourThumbnail.innerHTML += `
-                    <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
+                    <div class="thumbnail" onclick="openQuizz(${el.data[i].id})" data-identifier="quizz-card">
                         <nav class = "sidebar"> 
                             <ion-icon name="create-outline" id="edit"></ion-icon>
                             <ion-icon name="trash" id='delete'></ion-icon>
@@ -121,7 +121,7 @@ function loadQuizzes(el, myQuizzes) {
             continue;
         }
         getThumbnails.innerHTML += `
-        <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
+        <div class="thumbnail" onclick="openQuizz(${el.data[i].id})" data-identifier="quizz-card">
         <img src="${el.data[i].image}">
         <h2>${el.data[i].title}</h2>
         </div>
@@ -203,7 +203,7 @@ function renderQuiz(response) {
             }
             let text = `
             <div class="content">
-            <p class="title" style="background-color: ${data.questions[i].color};">${data.questions[i].title} </p>
+            <p class="title" style="background-color: ${data.questions[i].color};">${data.questions[i].title} data-identifier="question"</p>
             <div class="answers"> `
             for (let j = 0; j < data.questions[i].answers.length; j++) {
                 const answer = data.questions[i].answers[j];
@@ -217,7 +217,7 @@ function renderQuiz(response) {
             for (let k = 0; k < answerObject.length; k++) {
 
                 text += `
-            <div class="option" onclick = "pickOption(this, ${answerObject[k].isCorrectAnswer})">
+            <div class="option" onclick = "pickOption(this, ${answerObject[k].isCorrectAnswer})" data-identifier="answer">
             <img src="${answerObject[k].image}" >
             <p id = "${answerObject[k].isCorrectAnswer}">${answerObject[k].text}</p>
             </div>
@@ -279,7 +279,7 @@ function pickOption(element, isCorrect) {
             }
         }
         quizz.innerHTML += `
-            <div class="output">
+            <div class="output" data-identifier="quizz-result">
                 <p class="title">${score}% de acerto: ${levelGroup.title}</p>
                 <div class="info">
                     <img src="${levelGroup.image}" >
@@ -467,46 +467,49 @@ function createAnswers() {
     screenOne.classList.add('hide')
     screenTwo.classList.remove('hide')
 
+    screenTwo.innerHTML += '<h1>Crie suas perguntas</h1>'
+
     for (let i = 1; i <= nQuestions.value; i++) {
         screenTwo.innerHTML +=
             `
-        <div class="minimized" onclick ="openForm(this)">
-        <h1>Pergunta ${i}</h1>
-        <ion-icon name="create-outline" ></ion-icon>
-        </div>
-        <div class="form-Field hide">
-        <div class="form">
-        <h1>Pergunta ${i}</h1>
-        <input class='mandatory title' type="text" placeholder="Texto da pergunta">
-        <p class = 'error title'> </p>
-        <input class='mandatory color' type="text" placeholder="Cor de fundo da pergunta">
-        <p class = 'error color'> </p>
-        <br>
-        <h1>Resposta correta</h1>
-        <input class='mandatory correct-answer ' type="text" placeholder="Resposta correta">
-        <p class = 'error correct-answer'> </p>
-        <input class='mandatory url-correct-answer' type="text" placeholder="URL da imagem">
-        <p class = 'error image-correct'> </p>
-        <br>
-        <h1>Respostas incorretas</h1>
-        <input class='mandatory wrong-answer' type="text" placeholder="Resposta incorreta 1">
-        <p class = 'error wrong-answer'> </p>
-        <input class='mandatory url-wrong-answer' type="text" placeholder="URL da imagem 1">
-        <p class = 'error image-wrong'> </p>
-        <br>
-        <input class='no-mandatory wrong-answer id1' type="text" placeholder="Resposta incorreta 2">
-        <p class = 'error wrong-answer'> </p>
-        <input class='no-mandatory url-wrong-answer id1' type="text" placeholder="URL da imagem 2">
-        <p class = 'error image-wrong'> </p>
-        <br>
-        <input class='no-mandatory wrong-answer id2' type="text" placeholder="Resposta incorreta 3">
-        <p class = 'error wrong-answer'> </p>
-        <input class='no-mandatory url-wrong-answer id2' type="text" placeholder="URL da imagem 3">
-        <p class = 'error image-wrong'> </p>
-        </div>
-        </div>`
-
+            <div class="minimized" onclick ="openForm(this)" data-identifier="expand">
+                <h1>Pergunta ${i}</h1>
+                <ion-icon name="create-outline" ></ion-icon>
+            </div>
+            <div class="form-Field hide">
+                <div class="form">
+                    <h1>Pergunta ${i}</h1>
+                    <input class='mandatory title' type="text" placeholder="Texto da pergunta" data-identifier="question">
+                    <p class = 'error title'> </p>
+                    <input class='mandatory color' type="text" placeholder="Cor de fundo da pergunta" data-identifier="question">
+                    <p class = 'error color'> </p>
+                    <br>
+                    <h1>Resposta correta</h1>
+                    <input class='mandatory correct-answer ' type="text" placeholder="Resposta correta" data-identifier="question">
+                    <p class = 'error correct-answer'> </p>
+                    <input class='mandatory url-correct-answer' type="text" placeholder="URL da imagem" data-identifier="question">
+                    <p class = 'error image-correct'> </p>
+                    <br>
+                    <h1>Respostas incorretas</h1>
+                    <input class='mandatory wrong-answer' type="text" placeholder="Resposta incorreta 1" data-identifier="question">
+                    <p class = 'error wrong-answer'> </p>
+                    <input class='mandatory url-wrong-answer' type="text" placeholder="URL da imagem 1" data-identifier="question">
+                    <p class = 'error image-wrong'> </p>
+                    <br>
+                    <input class='no-mandatory wrong-answer id1' type="text" placeholder="Resposta incorreta 2" data-identifier="question">
+                    <p class = 'error wrong-answer'> </p>
+                    <input class='no-mandatory url-wrong-answer id1' type="text" placeholder="URL da imagem 2" data-identifier="question">
+                    <p class = 'error image-wrong'> </p>
+                    <br>
+                    <input class='no-mandatory wrong-answer id2' type="text" placeholder="Resposta incorreta 3" data-identifier="question">
+                    <p class = 'error wrong-answer'> </p>
+                    <input class='no-mandatory url-wrong-answer id2' type="text" placeholder="URL da imagem 3" data-identifier="question">
+                    <p class = 'error image-wrong'> </p>
+                </div>
+            </div>`
     }
+
+    
     screenTwo.innerHTML += `<button class="btn" onclick="verificationQuestions ()">Prosseguir para criar níveis</button>`
     console.log(editElement)
     if (editElement !== undefined) {
@@ -701,22 +704,24 @@ function createLevel() {
     screenTwo.classList.add('hide')
     screenThree.classList.remove('hide')
 
+    screenThree.innerHTML += '<h1>Agora, decida os níveis</h1>'
+
     for (let i = 1; i <= nLevel.value; i++) {
         screenThree.innerHTML += `
-            <div class="minimized" onclick = "openForm(this)">
+            <div class="minimized" onclick = "openForm(this)" data-identifier="expand">
                 <h1>Nível ${i}</h1>
                 <ion-icon name="create-outline"></ion-icon>
             </div>
             <div class = "form-Field hide">
                 <div class="form hide">
                     <h1>Nível ${i}</h1>
-                    <input class= "title" type="text" placeholder="Título do nível">
+                    <input class= "title" type="text" placeholder="Título do nível" data-identifier="level">
                     <p class ='error title'> </p>
-                    <input class = "min-value" type="number" placeholder="% de acerto mínima">
+                    <input class = "min-value" type="number" placeholder="% de acerto mínima" data-identifier="level">
                     <p class ='error min-value'> </p>
-                    <input class = "url-image" type="text" placeholder="URL da imagem do nível">
+                    <input class = "url-image" type="text" placeholder="URL da imagem do nível" data-identifier="level">
                     <p class ='error image'> </p>
-                    <input class = "description" type="text" placeholder="Descrição do nível">
+                    <input class = "description" type="text" placeholder="Descrição do nível" data-identifier="level">
                     <p class ='error description'> </p>
                 </div>
             </div>
@@ -862,17 +867,10 @@ function getError(er) {
 }
 function openForm(item) {
     const nextElement = item.nextElementSibling;
-    const previousElement = item.previousElementSibling;
-
-    if (previousElement !== null) {
-        if (!previousElement.classList.contains("hide")) {
-            previousElement.classList.add("hide")
-        }
-    }
 
     nextElement.classList.toggle("hide")
-
 }
+
 function deleteQuizz() {
     const getId = parseInt(eventListener.target.parentNode.parentNode.attributes[1].value.replace('openQuizz(', '').replace(')', ''))
 

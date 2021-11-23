@@ -275,6 +275,7 @@ input {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    gap: 20px;
 }
 
 .option img {
@@ -537,8 +538,7 @@ input {
 }
 
 .loading img {
-    width: 150px;
-    animation: rotating 3s linear infinite;
+    width: 250px;
 }
 
 .loading p {
@@ -547,12 +547,6 @@ input {
     font-weight: 400;
     line-height: 29px;
     color: #ec362d;
-}
-
-@keyframes rotating {
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 @keyframes vanish {
@@ -567,9 +561,16 @@ input {
 }
 
 @media (max-width: 1100px){
-    .all-quizz {
+    .main {
+        width: 375px;
+        margin: 0 auto;
+    }
+    
+    .all-quizz,
+    .your-quizz div h1 {
         margin: 0 15px;
     }
+    
     .selected-quizz {
         margin: 146px 15px 77px;
     }
@@ -584,6 +585,15 @@ input {
         font-size: 19px;
         line-height: 22px;
     }
+
+    .answers {
+        gap: 5px;
+    }
+
+    .content {
+        width: 375px;
+    }
+
     .option p {
         font-size: 13px;
         line-height: 15px;
@@ -596,6 +606,57 @@ input {
         margin-bottom: 10px;
     
         cursor: pointer;
+    }
+
+    .output {
+        width: 375px;
+
+        flex-direction: column;
+    }
+    
+    .output .info{
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .output .info img {
+        width: 335px;
+        margin-bottom: 10px;
+    }
+    
+    .screen-one,
+    .screen-two,
+    .screen-four {
+        width: 100%;
+    }
+
+    .creating-quizz .form,
+    .form-Field,
+    .minimized {
+        width: 100%;
+    }
+
+    .screen-four .thumbnail {
+        width: 340px;
+        max-width: 500px;
+    }
+
+    .screen-four button {
+        width: 220px;
+    }
+
+    .creating-quizz .form input {
+        width: 99%;
+        padding: 0 5px;
+        margin-left: -5px;
+    }
+
+    .btn {
+        width: 35vh;
+    }
+
+    .confirmDelete {
+        width: 375px;
     }
    
 }
