@@ -7,13 +7,15 @@ let scrollTo = 0;
 let responseObject;
 let data;
 let createdQuizzes = [];
-let confirmed = '';
+let confirmed = false;
+let eventListener = ''
 
 const main = document.querySelector('.main')
 const screenOne = document.querySelector('.screen-one')
 const screenTwo = document.querySelector('.screen-two')
 const screenThree = document.querySelector('.screen-three')
 const screenFour = document.querySelector('.screen-four')
+const screenConfirm = document.querySelector('.confirmDelete')
 
 let nQuestions = ''
 let nLevel = ''
@@ -98,8 +100,11 @@ function loadQuizzes(el) {
 
     const trash = document.querySelectorAll(".sidebar #delete")
     trash.forEach(t => t.addEventListener("click", ev => {
-        deleteQuizz(ev)
+        eventListener = ev
+        main.classList.add('hide')
+        screenConfirm.classList.remove('hide')
         ev.stopPropagation()
+
     }))
 
 }
@@ -699,40 +704,42 @@ function openForm(item) {
     nextElement.classList.toggle("hide")
 
 }
-function deleteQuizz(ev) {
-    console.log('ta no delete')
-    console.dir(parseInt(ev.target.parentNode.parentNode.attributes[1].value.replace('openQuizz(', '').replace(')', '')))
-    console.log(createdQuizzes[0].id)
-    console.log(createdQuizzes[0].key)
+function deleteQuizz() {
+    const getId = parseInt(eventListener.target.parentNode.parentNode.attributes[1].value.replace('openQuizz(', '').replace(')', ''))
 
-    // axios.delete(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${createdQuizzes[0].id}`, { headers: { 'Secret-Key': createdQuizzes[0].key } })
-    //     .then(() => {
-    //         createdQuizzes.pop()
-    //         const deleteQuizzesSerial = JSON.stringify(createdQuizzes)
-    //         localStorage.setItem("myQuizzes", deleteQuizzesSerial);
-    //         console.log('antes da funcao')
+    for (let i = 0; i < createdQuizzes.length; i++) {
+        if (createdQuizzes[i].id == getId) {
 
+            if (confirmed) {
 
+                axios.delete(`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${createdQuizzes[i].id}`, { headers: { 'Secret-Key': createdQuizzes[i].key } })
+                    .then(() => {
+                        createdQuizzes.splice(i, 1)
+                        const deleteQuizzesSerial = JSON.stringify(createdQuizzes)
+                        localStorage.setItem("myQuizzes", deleteQuizzesSerial);
 
-    //     })
-    // const trash = document.querySelector(".sidebar #delete")
-    // trash.addEventListener("click", ev => {
-    //     console.log(ev.parentNode)
-    //     console.log('to aqui')
-    // })
+                        if (createdQuizzes.length <= 0) {
+                            localStorage.removeItem("myQuizzes")
+                            document.querySelector(".selected-quizz").classList.remove("hide");
+                            document.querySelector(".your-quizz").classList.add("hide");
+                        } else {
+                            comeback()
+                        }
+                    })
+            }
+        }
+    }
 }
 
-function teste(ev) {
+function confirm() {
+    confirmed = true
+    deleteQuizz()
+    main.classList.remove('hide')
+    screenConfirm.classList.add('hide')
+}
 
-    console.log(createdQuizzes[0].id)
-
-
-    if (createdQuizzes.length <= 0) {
-        // console.log('entrou no if')
-        // localStorage.removeItem("myQuizzes")
-        // document.querySelector(".selected-quizz").classList.remove("hide");
-        // document.querySelector(".your-quizz").classList.add("hide");
-
-
-    }
+function reject() {
+    confirmed = false
+    main.classList.remove('hide')
+    screenConfirm.classList.add('hide')
 }
