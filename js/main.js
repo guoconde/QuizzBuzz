@@ -9,6 +9,9 @@ let data;
 let createdQuizzes = [];
 let confirmed = false;
 let eventListener = ''
+let editElement;
+let editElementKey;
+let editElementID;
 
 
 const main = document.querySelector('.main')
@@ -50,7 +53,6 @@ axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
 
 function verifyMyQuizzes(el) {
     let myQuizzes = localStorage.getItem("myQuizzes")
-    console.log(myQuizzes)
     if (myQuizzes !== null && myQuizzes !== "") {
 
         myQuizzes = JSON.parse(myQuizzes);
@@ -64,7 +66,6 @@ function verifyMyQuizzes(el) {
             for (let j = 0; j < el.data.length; j++) {
                 const element = el.data[j].id;
                 if (element === item) {
-                    console.log(item)
                     allQuizzes.push(myQuizzes[i])
                 }
             }
@@ -84,9 +85,11 @@ function verifyMyQuizzes(el) {
 }
 
 function loadQuizzes(el, myQuizzes) {
-    if (myQuizzes[0] !== undefined) {
-        document.querySelector(".selected-quizz").classList.add("hide");
-        document.querySelector(".your-quizz").classList.remove("hide");
+    if (myQuizzes !== null && myQuizzes !== undefined) {
+        if (myQuizzes[0] !== undefined) {
+            document.querySelector(".selected-quizz").classList.add("hide");
+            document.querySelector(".your-quizz").classList.remove("hide");
+        }
     }
 
     const yourThumbnail = document.querySelector(".your-quizz .your-thumbnails");
@@ -95,11 +98,12 @@ function loadQuizzes(el, myQuizzes) {
 
     for (let i = 0; i < el.data.length; i++) {
         let control = false;
-        if (myQuizzes[0] !== undefined) {
-            for (let j = 0; j < myQuizzes.length; j++) {
-                let element = myQuizzes[j].id;
-                if (el.data[i].id === element) {
-                    yourThumbnail.innerHTML += `
+        if (myQuizzes !== null && myQuizzes !== undefined) {
+            if (myQuizzes[0] !== undefined) {
+                for (let j = 0; j < myQuizzes.length; j++) {
+                    let element = myQuizzes[j].id;
+                    if (el.data[i].id === element) {
+                        yourThumbnail.innerHTML += `
                     <div class="thumbnail" onclick="openQuizz(${el.data[i].id})">
                         <nav class = "sidebar"> 
                             <ion-icon name="create-outline" id="edit"></ion-icon>
@@ -108,7 +112,8 @@ function loadQuizzes(el, myQuizzes) {
                         <img src="${el.data[i].image}">
                         <h2>${el.data[i].title}</h2>
                     </div>`
-                    control = true;
+                        control = true;
+                    }
                 }
             }
         }
@@ -142,7 +147,6 @@ function loadQuizzes(el, myQuizzes) {
         }, 3000)
 
     }))
-
 }
 
 function openQuizz(element) {
@@ -342,11 +346,12 @@ function comeback() {
         newQuestions.image = ''
         newQuestions.questions = []
         newQuestions.levels = []
+        editElement = undefined;
 
         window.scroll(0, 0)
 
         const promise = axios.get('https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes')
-        promise.then(loadQuizzes)
+        promise.then(verifyMyQuizzes)
     }, 3000)
 }
 
@@ -361,14 +366,54 @@ function isValidHttpUrl(string) {
 
     return url.protocol === "http:" || url.protocol === "https:";
 }
-function createQuizz() {
+function createQuizz(quizz) {
     main.classList.add('hide')
     screenLoad.classList.remove('hide')
+
+    screenOne.innerHTML = `<h1>Comece pelo começo</h1>
+    <div class="form">
+        <input type="text" placeholder="Título do seu quizz">
+        <p class="error title"></p>
+        <input type="text" placeholder="URL da imagem do seu quizz">
+        <p class="error image"></p>
+        <input type="number" placeholder="Quantidade de perguntas do quizz">
+        <p class="error nquestions"></p>
+        <input type="number" placeholder="Quantidade de níveis do quizz">
+        <p class="error nlevels"></p>
+    </div>
+   `
 
     setTimeout(() => {
         screenLoad.classList.add('hide')
         screenOne.classList.remove('hide')
     }, 3000)
+
+    if (quizz === undefined) {
+        screenOne.innerHTML += `<button class="btn" onclick="verificationInfo()">Prosseguir para criar perguntas</button>`
+        return;
+    }
+
+    for (let i = 0; i < createdQuizzes.length; i++) {
+        const element = createdQuizzes[i];
+        if (element.id === quizz) {
+            editElement = {
+                title: '',
+                image: '',
+                questions: [],
+                levels: []
+            }
+            editElementID = element.id;
+            editElementKey = element.key;
+            editElement.questions = element.questions;
+            editElement.levels = element.levels;
+            screenOne.innerHTML += `<button class="btn" onclick="verificationInfo()">Prosseguir para criar perguntas</button>`
+            document.querySelector('.screen-one .form input:first-child').value = element.title;
+            document.querySelector('.screen-one .form input:nth-child(3)').value = element.image;
+            document.querySelector('.screen-one .form input:nth-child(5)').value = element.questions.length;
+            document.querySelector('.screen-one .form input:nth-child(7)').value = element.levels.length;
+
+        }
+    }
 }
 function verificationInfo() {
     let quizzTitle = document.querySelector('.screen-one .form input:first-child')
@@ -405,9 +450,14 @@ function verificationInfo() {
         nLevel.setAttribute("style", "background-color:#FFE9E9;")
         control = false
     }
-    if (control === true) {
+    if (control === true && editElement === undefined) {
         newQuestions.title = quizzTitle.value;
         newQuestions.image = quizzImage.value;
+        createAnswers()
+    }
+    if (control === true && editElement !== undefined) {
+        editElement.title = quizzTitle.value;
+        editElement.image = quizzImage.value;
         createAnswers()
     }
 
@@ -417,48 +467,84 @@ function createAnswers() {
     screenOne.classList.add('hide')
     screenTwo.classList.remove('hide')
 
-
     for (let i = 1; i <= nQuestions.value; i++) {
         screenTwo.innerHTML +=
             `
-            <div class="minimized" onclick ="openForm(this)">
-                <h1>Pergunta ${i}</h1>
-                <ion-icon name="create-outline" ></ion-icon>
-            </div>
-            <div class="form-Field hide">
-                <div class="form">
-                    <h1>Pergunta ${i}</h1>
-                    <input class='mandatory title' type="text" placeholder="Texto da pergunta">
-                    <p class = 'error title'> </p>
-                    <input class='mandatory color' type="text" placeholder="Cor de fundo da pergunta">
-                    <p class = 'error color'> </p>
-                    <br>
-                    <h1>Resposta correta</h1>
-                    <input class='mandatory correct-answer ' type="text" placeholder="Resposta correta">
-                    <p class = 'error correct-answer'> </p>
-                    <input class='mandatory url-correct-answer' type="text" placeholder="URL da imagem">
-                    <p class = 'error image-correct'> </p>
-                    <br>
-                    <h1>Respostas incorretas</h1>
-                    <input class='mandatory wrong-answer' type="text" placeholder="Resposta incorreta 1">
-                    <p class = 'error wrong-answer'> </p>
-                    <input class='mandatory url-wrong-answer' type="text" placeholder="URL da imagem 1">
-                    <p class = 'error image-wrong'> </p>
-                    <br>
-                    <input class='no-mandatory wrong-answer' type="text" placeholder="Resposta incorreta 2">
-                    <p class = 'error wrong-answer'> </p>
-                    <input class='no-mandatory url-wrong-answer' type="text" placeholder="URL da imagem 2">
-                    <p class = 'error image-wrong'> </p>
-                    <br>
-                    <input class='no-mandatory wrong-answer' type="text" placeholder="Resposta incorreta 3">
-                    <p class = 'error wrong-answer'> </p>
-                    <input class='no-mandatory url-wrong-answer' type="text" placeholder="URL da imagem 3">
-                    <p class = 'error image-wrong'> </p>
-                </div>
-            </div>`
-    }
+        <div class="minimized" onclick ="openForm(this)">
+        <h1>Pergunta ${i}</h1>
+        <ion-icon name="create-outline" ></ion-icon>
+        </div>
+        <div class="form-Field hide">
+        <div class="form">
+        <h1>Pergunta ${i}</h1>
+        <input class='mandatory title' type="text" placeholder="Texto da pergunta">
+        <p class = 'error title'> </p>
+        <input class='mandatory color' type="text" placeholder="Cor de fundo da pergunta">
+        <p class = 'error color'> </p>
+        <br>
+        <h1>Resposta correta</h1>
+        <input class='mandatory correct-answer ' type="text" placeholder="Resposta correta">
+        <p class = 'error correct-answer'> </p>
+        <input class='mandatory url-correct-answer' type="text" placeholder="URL da imagem">
+        <p class = 'error image-correct'> </p>
+        <br>
+        <h1>Respostas incorretas</h1>
+        <input class='mandatory wrong-answer' type="text" placeholder="Resposta incorreta 1">
+        <p class = 'error wrong-answer'> </p>
+        <input class='mandatory url-wrong-answer' type="text" placeholder="URL da imagem 1">
+        <p class = 'error image-wrong'> </p>
+        <br>
+        <input class='no-mandatory wrong-answer id1' type="text" placeholder="Resposta incorreta 2">
+        <p class = 'error wrong-answer'> </p>
+        <input class='no-mandatory url-wrong-answer id1' type="text" placeholder="URL da imagem 2">
+        <p class = 'error image-wrong'> </p>
+        <br>
+        <input class='no-mandatory wrong-answer id2' type="text" placeholder="Resposta incorreta 3">
+        <p class = 'error wrong-answer'> </p>
+        <input class='no-mandatory url-wrong-answer id2' type="text" placeholder="URL da imagem 3">
+        <p class = 'error image-wrong'> </p>
+        </div>
+        </div>`
 
+    }
     screenTwo.innerHTML += `<button class="btn" onclick="verificationQuestions ()">Prosseguir para criar níveis</button>`
+    console.log(editElement)
+    if (editElement !== undefined) {
+        const item = document.querySelectorAll('.screen-two .form-Field');
+        for (let i = 0; i < item.length; i++) {
+            let currentItem = item[i];
+            let inputTitle = currentItem.querySelector(".form .mandatory.title")
+            let inputColor = currentItem.querySelector(".form .mandatory.color");
+            let inputCorrectAnswer = currentItem.querySelector(".form .mandatory.correct-answer");
+            let inputImageCa = currentItem.querySelector(".form .mandatory.url-correct-answer");
+            let inputWrongAnswer = currentItem.querySelector(".form .mandatory.wrong-answer");
+            let inputImageWa = currentItem.querySelector(".form .mandatory.url-wrong-answer");
+
+
+            inputTitle.value = editElement.questions[i].title;
+            inputColor.value = editElement.questions[i].color;
+            inputCorrectAnswer.value = editElement.questions[i].answers[0].text;
+            inputImageCa.value = editElement.questions[i].answers[0].image;
+            inputWrongAnswer.value = editElement.questions[i].answers[1].text;
+            inputImageWa.value = editElement.questions[i].answers[1].image;
+
+            let noMandatoryAnswer1 = currentItem.querySelector(".form .no-mandatory.wrong-answer.id1");
+            console.log(noMandatoryAnswer1)
+            let noMandatoryAnswer2 = currentItem.querySelector(".form .no-mandatory.wrong-answer.id2");
+            let noMandatoryUrl1 = currentItem.querySelector(".no-mandatory.url-wrong-answer.id1");
+            let noMandatoryUrl2 = currentItem.querySelector(".no-mandatory.url-wrong-answer.id2");
+            if (editElement.questions[i].answers[2] !== undefined) {
+                noMandatoryAnswer1.value = editElement.questions[i].answers[2].text;
+                noMandatoryUrl1.value = editElement.questions[i].answers[2].image;
+            }
+            if (editElement.questions[i].answers[3] !== undefined) {
+                noMandatoryAnswer2.value = editElement.questions[i].answers[3].text;
+                noMandatoryUrl2.value = editElement.questions[i].answers[3].image;
+            }
+
+        }
+
+    }
 }
 function verificationQuestions() {
     const item = document.querySelectorAll('.screen-two .form-Field');
@@ -530,6 +616,11 @@ function verificationQuestions() {
             }
         }
     }
+    if (editElement !== undefined) {
+        editElement.questions = []
+        console.log("Passei Aqui")
+        console.log(editElement)
+    }
     if (control === false) {
         return;
     }
@@ -562,7 +653,11 @@ function verificationQuestions() {
         answersInfo.isCorrectAnswer = false;
         questionsInfo.answers.push(answersInfo);
 
-        newQuestions.questions.push(questionsInfo);
+        if (editElement === undefined) {
+            newQuestions.questions.push(questionsInfo);
+        } else {
+            editElement.questions.push(questionsInfo)
+        }
         answersInfo = {
             text: "",
             image: "",
@@ -594,6 +689,8 @@ function verificationQuestions() {
             answers: []
         }
     })
+
+
 
     createLevel()
     screenTwo.innerHTML = ""
@@ -627,9 +724,25 @@ function createLevel() {
     }
 
     screenThree.innerHTML += `<button class="btn" onclick="VerificationLevels()">Finalizar Quizz</button>`
+
+    if (editElement !== undefined) {
+        const item = document.querySelectorAll('.screen-three .form-Field');
+        for (let i = 0; i < item.length; i++) {
+            const element = item[i];
+            let title = element.querySelector(".form .title");
+            let inputMinValue = element.querySelector(".form .min-value")
+            let urlImage = element.querySelector(".form .url-image")
+            let description = element.querySelector(".form .description");
+
+            title.value = editElement.levels[i].title
+            inputMinValue.value = editElement.levels[i].minValue;
+            urlImage.value = editElement.levels[i].image
+            description.value = editElement.levels[i].text
+        }
+    }
 }
 
-function VerificationLevels() {
+function VerificationLevels(response) {
     const item = document.querySelectorAll('.screen-three .form-Field');
     const minValueLevels = []
     const allInputs = document.querySelectorAll(".screen-three input")
@@ -669,6 +782,9 @@ function VerificationLevels() {
             control = false;
         }
     })
+    if (editElement !== undefined) {
+        editElement.levels = []
+    }
     if (control === false) {
         return;
     }
@@ -685,7 +801,11 @@ function VerificationLevels() {
         levelsInfo.image = urlImage.value;
         levelsInfo.text = description.value;
         levelsInfo.minValue = minValue;
-        newQuestions.levels.push(levelsInfo);
+        if (editElement === undefined) {
+            newQuestions.levels.push(levelsInfo);
+        } else {
+            editElement.levels.push(levelsInfo);
+        }
         levelsInfo = {
             title: "",
             image: "",
@@ -698,9 +818,12 @@ function VerificationLevels() {
     for (let i = 0; i < minValueLevels.length; i++) {
         const element = minValueLevels[i];
         if (element === 0) {
-            finishQuizz();
-            screenThree.innerHTML = ""
-            return;
+            if (editElement === undefined){
+                finishQuizz();
+                screenThree.innerHTML = ""
+                return;
+            }
+            sendEditQuizz()
         }
     }
     alert("Deve existir um nível com minValue = 0 !")
@@ -722,6 +845,7 @@ function finishQuizz() {
             <button class="btn-comeback" onclick="comeback()">Voltar pra home</button>
         `
         storeMyQuizz(response.data)
+        editElement = undefined;
     })
 
     promise.catch((er) => {
@@ -788,4 +912,37 @@ function reject() {
     confirmed = false
     main.classList.remove('hide')
     screenConfirm.classList.add('hide')
+}
+function editQuizz(ev) {
+    const getId = parseInt(ev.target.parentNode.parentNode.attributes[1].value.replace('openQuizz(', '').replace(')', ''))
+
+    createQuizz(getId)
+}
+function sendEditQuizz(){
+    
+    axios.put (`https://mock-api.driven.com.br/api/v4/buzzquizz/quizzes/${editElementID}`, editElement,
+     {headers: {"Secret-Key": editElementKey}})
+        .then(editElement => {
+            screenThree.classList.add('hide')
+            screenFour.classList.remove('hide')
+
+            screenFour.innerHTML = `
+                <h1>Seu quizz está pronto!</h1>
+                <div class="thumbnail quizz-done">
+                    <img src="${edit.image}">
+                    <h2>${edit.title}</h2>
+                </div>
+                <button class="btn" onclick="openQuizz(${edit.id})">Acessar Quizz</button>
+                <button class="btn-comeback" onclick="comeback()">Voltar pra home</button>
+            `
+            for (let i = 0; i < createdQuizzes.length; i++ ){
+                const element = createdQuizzes[i];
+                if (element.id === editElement.id){
+                    createdQuizzes[i] = editElement;
+                }
+            }
+            const data = JSON.stringify(createdQuizzes);
+            localStorage.setItem("myQuizzes", data);
+            editElement = undefined;
+        })
 }
